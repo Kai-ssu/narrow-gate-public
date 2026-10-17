@@ -14,6 +14,7 @@
     <p class="eyebrow">{{ game.passage }}</p>
     <h2>{{ game.title }}</h2>
     <p>{{ game.summary }}</p>
+    <p class="game-meta">{% include "game/difficulty.html" %}</p>
     <p class="game-meta">{{ game.stages|length }} stages · {{ game.minutes }} minutes · teams of {{ game.team_size }} · NIV or NKJV</p>
     <div class="button-row">
       <a class="button" href="{% url 'intro' game.slug %}">Play</a>

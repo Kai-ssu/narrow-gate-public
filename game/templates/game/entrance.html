@@ -25,6 +25,18 @@
             <path pathLength="1" d="M88 110 L130 128 L170 122" />
             <path pathLength="1" d="M104 150 L70 175" />
           </svg>
+        {% elif entrance.scene == "scroll" %}
+          <div class="scroll">
+            <div class="scroll-paper"><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="rod"></div>
+            <div class="rod rod-bottom"></div>
+          </div>
+        {% elif entrance.scene == "night" %}
+          <div class="crescent"></div>
+          <span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span>
+        {% elif entrance.scene == "seal" %}
+          <div class="decree"><span></span><span></span><span></span><span></span></div>
+          <div class="wax"><span>✦</span></div>
         {% elif entrance.scene == "doors" %}
           <div class="doorway">
             <div class="light"></div>

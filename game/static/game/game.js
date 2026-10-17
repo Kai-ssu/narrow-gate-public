@@ -19,6 +19,7 @@ function init() {
       const s = String(left % 60).padStart(2, "0");
       timer.textContent = left > 0 ? `${m}:${s}` : "Time's up";
       timer.classList.toggle("low", left < 5 * 60);
+      if (left === 0) document.querySelector(".time-up")?.removeAttribute("hidden");
     };
     tick();
     countdown = setInterval(tick, 1000);

@@ -5,8 +5,8 @@
 
 // The game's scenes come from its data (story_scenes): each sets the look, plays an
 // optional cue, then shows its lines one at a time.
-//   setting: "outside" (the game's story scenery) or "inside" (the cell)
-//   tint:    red wash over the scene      moon: the moon brightens in the cell window
+//   setting: "outside" (the game's story scenery) or "inside" (the game's projector room)
+//   tint:    red wash over the scene      moon: the moon brightens in the room's window
 //   effect:  one of the cues below, played when the scene starts
 const SCENES = JSON.parse(document.getElementById("story-scenes").textContent);
 

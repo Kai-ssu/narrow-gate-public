@@ -1,5 +1,5 @@
-// Projector backdrop: room countdown, narration, ambience, earthquake cue and the
-// player QR code.
+// Projector backdrop: room countdown, narration, ambience, earthquake cue (for games
+// that have one) and the player QR code.
 // Keys: I story · Space start/pause · E earthquake · Q QR code · T timer on/off
 //       S sound on/off · D debrief · R reset (F full screen is in projector.js).
 // URL options: ?minutes=45 for a different game length, ?timer=off to hide the clock,
@@ -18,6 +18,7 @@ const LINES = JSON.parse(document.getElementById("backdrop-lines").textContent);
 const clock = document.getElementById("clock");
 const status = document.getElementById("status");
 const line = document.getElementById("line");
+const TIME_UP = line.dataset.timeUp;
 const joinPanel = document.getElementById("join");
 const debriefLink = document.getElementById("debrief-link");
 const storyLink = document.getElementById("story-link");
@@ -189,7 +190,7 @@ function showLine(text) {
 line.textContent = LINES[0] || "";
 setInterval(() => {
   if (showClock && remaining() <= 0) {
-    if (line.textContent !== "Midnight has come.") showLine("Midnight has come.");
+    if (line.textContent !== TIME_UP) showLine(TIME_UP);
     return;
   }
   if (!LINES.length) return;
@@ -213,7 +214,7 @@ document.addEventListener("keydown", (event) => {
   if (isShortcut(event)) return;
   const key = event.key.toLowerCase();
   if (key === " ") toggle();
-  else if (key === "e") quake();
+  else if (key === "e" && button("quake")) quake();
   else if (key === "q") toggleQr();
   else if (key === "t") toggleClock();
   else if (key === "s") toggleSound();

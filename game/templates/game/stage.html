@@ -2,7 +2,7 @@
 {% block title %}Stage {{ stage.number }} · {{ game.title }}{% endblock %}
 {% block content %}
 <section class="card">
-  <p class="eyebrow">Stage {{ stage.number }} · {{ stage.reference }}</p>
+  <p class="eyebrow">Stage {{ stage.number }}{% if game.show_references %} · {{ stage.reference }}{% endif %}</p>
   <h1>{{ stage.title }}</h1>
   <div class="translation">{% include "game/bible_choice.html" %}</div>
   {% include card_template %}
@@ -23,4 +23,16 @@
     </form>
   {% endif %}
 </section>
+
+{% if deadline %}
+{# Shown once the countdown reaches zero (by game.js, or here if the page loads after). #}
+<section class="card time-up"{% if not time_up %} hidden{% endif %}>
+  <h2>Time's up</h2>
+  <p>You can keep going, or find your Gamemaster.</p>
+  <form class="reset-form" method="post" action="{% url 'reset' game.slug %}" data-confirm="Reset this device for a new team? This clears the progress and timer.">
+    {% csrf_token %}
+    <button class="button button--quiet" type="submit">Reset for a new team</button>
+  </form>
+</section>
+{% endif %}
 {% endblock %}

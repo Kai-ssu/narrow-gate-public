@@ -17,7 +17,7 @@ def normalize(code: str) -> str:
 class Entrance:
     """The animation played once when a team first arrives on a page."""
 
-    scene: str  # dark | songs | quake | torch | doors (see entrance.html)
+    scene: str  # dark | songs | quake | torch | doors | scroll | night | seal (see entrance.html)
     caption: str
     padlock: bool = True  # open a padlock first, since a code was just entered
 
@@ -68,7 +68,16 @@ class Game:
     freedom_entrance: Entrance
     minutes: int = 40
     team_size: str = "4–8"
+    difficulty: float = 3  # out of 5, in steps of 0.5; shown on the home, start and leader pages
+    # Show each stage's Bible reference to players. Off for games where teams find
+    # their own way through the passage (the answer key always shows them).
+    show_references: bool = True
     story_note: str = ""  # shown before the story plays (a dramatized retelling, etc.)
+    # The projector room: "cell" (a prison cell) or "palace" (a Persian palace hall).
+    # It sets the backdrop's scenery and ambient sound.
+    room: str = "cell"
+    earthquake: bool = False  # backdrop has an Earthquake cue (E) for the leader
+    time_up_line: str = "Time is up."  # backdrop narration once the room timer runs out
     # Atmosphere lines on the backdrop. Keep them free of answers.
     backdrop_lines: tuple[str, ...] = ()
     # Story mode captions, as scenes for story.js (see philippi.py for the format).
@@ -77,6 +86,16 @@ class Game:
     @property
     def templates(self) -> Templates:
         return Templates(self.slug)
+
+    @property
+    def difficulty_pips(self) -> list[str]:
+        """Five pips for the difficulty meter, e.g. 2.5 -> full, full, half, empty, empty."""
+        return ["full" if self.difficulty >= n else "half" if self.difficulty >= n - 0.5 else "empty" for n in range(1, 6)]
+
+    @property
+    def difficulty_label(self) -> str:
+        """e.g. "2.5" or "4"."""
+        return f"{self.difficulty:g}"
 
     @property
     def final_stage(self) -> int:

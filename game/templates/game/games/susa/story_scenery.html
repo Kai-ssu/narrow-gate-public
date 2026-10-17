@@ -1,0 +1,54 @@
+{# Susa at dusk, shown over the palace hall while the story is "outside". #}
+<div class="outside-scene" aria-hidden="true">
+  <div class="sun"></div>
+  <svg class="skyline" viewBox="0 0 1200 320" preserveAspectRatio="xMidYMax slice">
+    <defs>
+      {# Persian stepped battlements #}
+      <pattern id="merlons" width="24" height="12" patternUnits="userSpaceOnUse">
+        <path d="M2 12 V7 h4 V2 h10 v5 h4 v5Z" fill="#120b0b" />
+      </pattern>
+    </defs>
+    {# the citadel mound #}
+    <path class="hills" d="M0 235 Q160 215 300 214 L340 196 H900 L940 214 Q1060 214 1200 232 V320 H0Z" />
+    <g class="city">
+      <rect x="0" y="262" width="1200" height="58" />
+      {# citadel wall #}
+      <rect x="320" y="206" width="600" height="60" />
+      <rect x="320" y="194" width="600" height="12" fill="url(#merlons)" />
+      {# the King's Gate: a tower with an arched opening #}
+      <path fill-rule="evenodd" d="M190 266 V168 H300 V266Z M228 266 V214 a17 17 0 0 1 34 0 V266Z" />
+      <rect x="190" y="156" width="110" height="12" fill="url(#merlons)" />
+      {# the columned audience hall on its terrace #}
+      <g transform="translate(0 44)">
+      <rect x="430" y="186" width="380" height="22" />
+      <rect x="440" y="98" width="360" height="14" />
+      <rect x="440" y="86" width="360" height="12" fill="url(#merlons)" />
+      <g>
+        <rect x="452" y="112" width="9" height="76" /><rect x="445" y="112" width="23" height="7" />
+        <rect x="490" y="112" width="9" height="76" /><rect x="483" y="112" width="23" height="7" />
+        <rect x="528" y="112" width="9" height="76" /><rect x="521" y="112" width="23" height="7" />
+        <rect x="566" y="112" width="9" height="76" /><rect x="559" y="112" width="23" height="7" />
+        <rect x="604" y="112" width="9" height="76" /><rect x="597" y="112" width="23" height="7" />
+        <rect x="642" y="112" width="9" height="76" /><rect x="635" y="112" width="23" height="7" />
+        <rect x="680" y="112" width="9" height="76" /><rect x="673" y="112" width="23" height="7" />
+        <rect x="718" y="112" width="9" height="76" /><rect x="711" y="112" width="23" height="7" />
+        <rect x="756" y="112" width="9" height="76" /><rect x="749" y="112" width="23" height="7" />
+        <rect x="786" y="112" width="9" height="76" /><rect x="779" y="112" width="23" height="7" />
+      </g>
+      </g>
+      {# houses of the city below #}
+      <rect x="40" y="226" width="80" height="40" />
+      <rect x="40" y="218" width="80" height="8" fill="url(#merlons)" />
+      <rect x="950" y="222" width="90" height="44" />
+      <rect x="1050" y="238" width="70" height="28" />
+    </g>
+    {# date palms #}
+    <g class="palm">
+      <path d="M150 266 Q146 220 156 184" />
+      <path d="M156 184 Q134 176 118 192 M156 184 Q178 172 196 186 M156 184 Q146 164 128 162 M156 184 Q168 162 186 160 M156 184 Q158 170 156 156" />
+      <path d="M1150 266 Q1156 214 1144 176" />
+      <path d="M1144 176 Q1122 168 1106 184 M1144 176 Q1166 164 1184 178 M1144 176 Q1134 156 1116 154 M1144 176 Q1156 154 1174 152 M1144 176 Q1146 162 1144 148" />
+    </g>
+  </svg>
+</div>
+<div class="tint" aria-hidden="true"></div>

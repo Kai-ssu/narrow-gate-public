@@ -6,9 +6,12 @@ Scripture escape rooms for youth groups. Teams open a game on a phone or laptop,
 
 ## The escape rooms
 
-| Game | Passage | Stages | Address |
-|---|---|---|---|
-| **Midnight in Philippi** | Acts 16:16–34 | 4 | `/philippi/` |
+| Game | Passage | Stages | Time | Difficulty | Address |
+|---|---|---|---|---|---|
+| **Midnight in Philippi** | Acts 16:16–34 | 4 | 40 min | 2.5 / 5 | `/philippi/` |
+| **The Secret of Susa** | Esther 2–9 | 4 | 40 min | 4 / 5 | `/susa/` |
+
+The Secret of Susa's clue cards give no chapter or verse references: teams find their own way through Esther 2–9.
 
 More are on the way.
 
@@ -51,7 +54,7 @@ Every game gets all of these. Addresses below are for Midnight in Philippi; othe
 - A reset button on the victory screen clears a device for the next team.
 - A leader page at `/philippi/lead/` with the run of the night, the player QR code and links to everything below.
 - A passcode-protected answer key at `/philippi/lead/answers/`.
-- A projector backdrop at `/philippi/backdrop/` with a room countdown, ambient sound, a QR code for players to join, and links to the story and debrief. Keys: <kbd>I</kbd> story, <kbd>Space</kbd> start/pause, <kbd>E</kbd> earthquake, <kbd>Q</kbd> QR code, <kbd>T</kbd> timer on/off, <kbd>S</kbd> sound on/off, <kbd>D</kbd> debrief, <kbd>F</kbd> full screen, <kbd>R</kbd> reset. Add `?timer=off` to hide the clock or `?minutes=45` for a different game length.
+- A projector backdrop at `/philippi/backdrop/` with a room countdown, ambient sound, a QR code for players to join, and links to the story and debrief. Keys: <kbd>I</kbd> story, <kbd>Space</kbd> start/pause, <kbd>E</kbd> earthquake (Midnight in Philippi only), <kbd>Q</kbd> QR code, <kbd>T</kbd> timer on/off, <kbd>S</kbd> sound on/off, <kbd>D</kbd> debrief, <kbd>F</kbd> full screen, <kbd>R</kbd> reset. Add `?timer=off` to hide the clock or `?minutes=45` for a different game length.
 - Story mode at `/philippi/story/`: the backstory as a captioned "film" for the projector, with music and sound. It ends with **Start the game**, which starts the backdrop's room timer. Keys: <kbd>Space</kbd> play/pause, <kbd>→</kbd>/<kbd>←</kbd> next/back, <kbd>R</kbd> restart, <kbd>B</kbd> backdrop.
 - Debrief slides at `/philippi/debrief/`: the discussion questions, one per screen. Keys: <kbd>→</kbd>/<kbd>←</kbd> (or a presentation clicker), <kbd>B</kbd> backdrop, <kbd>F</kbd> full screen.
 
@@ -64,6 +67,7 @@ The site's old single-game addresses (`/play/`, `/backdrop/` and so on) redirect
 | [game/games/](game/games/) | One Python file per escape room, plus the shared building blocks in `base.py` |
 | [game/games/philippi.py](game/games/philippi.py) | Midnight in Philippi: stages, codes, answer key, story captions, backdrop narration |
 | [game/templates/game/games/philippi/](game/templates/game/games/philippi/) | Its clue cards, intro story, victory quote, story scenery, debrief questions and leader tips |
+| [game/games/susa.py](game/games/susa.py) and [game/templates/game/games/susa/](game/templates/game/games/susa/) | The Secret of Susa, laid out the same way |
 | [game/templates/game/](game/templates/game/) | Pages shared by every game |
 | [game/static/game/](game/static/game/) | Shared CSS and JavaScript: sound, animations, projector pages |
 | `docs/` | Source material for each game (kept out of the public repo) |
@@ -75,7 +79,16 @@ The site's old single-game addresses (`/play/`, `/backdrop/` and so on) redirect
 3. Add the game to the list in `game/games/__init__.py`. It then appears on the home page.
 4. Run `python manage.py test`.
 
-The unlock scenes, projector cell and sound cues were designed for Midnight in Philippi. A game set somewhere other than a prison may need its own scenes, which means a small change to the shared code.
+Some shared pieces come in more than one style, chosen in the game's file:
+
+- `room`: the projector backdrop's scenery and ambient sound. `"cell"` is a prison cell with dripping water (Midnight in Philippi); `"palace"` is a Persian palace hall with plucked strings (The Secret of Susa).
+- `earthquake`: whether the backdrop has the <kbd>E</kbd> earthquake cue.
+- `time_up_line`: the backdrop's line when the room timer runs out.
+- `difficulty`: out of 5, in steps of 0.5, shown as a meter on the home, start and leader pages.
+- `show_references`: set to `False` to hide each stage's Bible reference from players (the answer key still shows it).
+- Each stage's `Entrance` scene: `dark`, `songs`, `quake`, `torch`, `doors`, `scroll`, `night` or `seal` (see `entrance.html`).
+
+A game set somewhere new may need another room or unlock scene, which means a small change to the shared code.
 
 ## Run locally
 

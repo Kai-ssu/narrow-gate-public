@@ -64,7 +64,8 @@ class Progress:
         started_at = self.get("started_at")
         if started_at is None:
             return {}
-        return {"deadline": started_at + self.game.minutes * 60}
+        deadline = started_at + self.game.minutes * 60
+        return {"deadline": deadline, "time_up": time.time() >= deadline}
 
 
 def game_view(view):

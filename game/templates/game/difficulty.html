@@ -1,0 +1,2 @@
+{# Difficulty meter: five pips, e.g. 2.5 shows two full, one half and two empty. #}
+<span class="difficulty" role="img" aria-label="Difficulty {{ game.difficulty_label }} out of 5"><span class="difficulty-pips" aria-hidden="true">{% for pip in game.difficulty_pips %}<span class="pip pip--{{ pip }}"></span>{% endfor %}</span> Difficulty {{ game.difficulty_label }}/5</span>

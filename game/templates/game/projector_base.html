@@ -12,10 +12,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=EB+Garamond:ital@0;1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'game/projector.css' %}">
 </head>
-<body class="{% block body_class %}{% endblock %}" data-game="{{ game.slug }}" data-minutes="{{ game.minutes }}">
+<body class="room-{{ game.room }} {% block body_class %}{% endblock %}" data-game="{{ game.slug }}" data-room="{{ game.room }}" data-minutes="{{ game.minutes }}">
   {# Full-screen pages for the media team's projector. Not linked from the player pages. #}
   <div class="room" id="room">
     <div class="wall"></div>
+    {% if game.room == "palace" %}
+    {# Glazed-brick rosette frieze and royal hangings, as in the palace at Susa. #}
+    <div class="frieze" aria-hidden="true"></div>
+    <div class="drape drape-left" aria-hidden="true"></div>
+    <div class="drape drape-right" aria-hidden="true"></div>
+    {% endif %}
 
     <div class="window" aria-hidden="true">
       <div class="moon"></div>

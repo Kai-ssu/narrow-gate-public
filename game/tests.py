@@ -1,12 +1,16 @@
+import time
 from dataclasses import replace
 from types import SimpleNamespace
+from unittest.mock import patch
 
 from django.test import SimpleTestCase, override_settings
 from django.urls import reverse
+from django.utils.html import escape
 
 from .games import GAMES
 from .games.base import normalize
 from .games.philippi import GAME as PHILIPPI
+from .games.susa import GAME as SUSA
 from .views import Progress
 
 SLUG = PHILIPPI.slug
@@ -45,6 +49,19 @@ class SiteTests(SimpleTestCase):
             self.assertContains(response, game.title)
             self.assertContains(response, f'href="{reverse("intro", args=[game.slug])}"')
             self.assertContains(response, f'href="{reverse("facilitator", args=[game.slug])}"')
+
+    def test_home_page_shows_each_difficulty(self):
+        response = self.client.get(reverse("landing"))
+        self.assertContains(response, "Difficulty 2.5 out of 5")
+        self.assertContains(response, "Difficulty 4 out of 5")
+
+    def test_difficulty_pips(self):
+        self.assertEqual(PHILIPPI.difficulty_pips, ["full", "full", "half", "empty", "empty"])
+        self.assertEqual(SUSA.difficulty_pips, ["full", "full", "full", "full", "empty"])
+
+    def test_philippi_cards_still_show_references(self):
+        self.client.post(url("start"))
+        self.assertContains(self.client.get(url("stage", 1)), "Stage 1 · Acts 16:16–24")
 
     def test_about_page(self):
         self.assertContains(self.client.get(reverse("about")), "Kye Laurel")
@@ -141,6 +158,15 @@ class GameFlowTests(SimpleTestCase):
         self.assertContains(response, f'action="{url("reset")}"')
         self.assertNotContains(self.client.get(url("freedom")), 'class="entrance')
 
+    def test_reset_offered_once_time_is_up(self):
+        self.start()
+        self.assertContains(self.client.get(url("stage", 1)), 'class="card time-up" hidden')
+        later = time.time() + PHILIPPI.minutes * 60 + 1
+        with patch("game.views.time.time", return_value=later):
+            response = self.client.get(url("stage", 1))
+        self.assertContains(response, 'class="card time-up">')
+        self.assertContains(response, f'action="{url("reset")}"')
+
     def test_reset_clears_progress(self):
         self.start()
         self.submit(1, "284")
@@ -235,3 +261,104 @@ class ProjectorTests(SimpleTestCase):
         for title in ["Praise in the Dark", "Mercy Over Self-Preservation", "The Domino Effect of Faith"]:
             self.assertContains(response, title)
         self.assertNotContains(response, "Facilitator Focus")
+
+
+class EveryGameTests(SimpleTestCase):
+    """Each game, played start to finish, renders every page."""
+
+    @override_settings(LEADER_CODE="open sesame")
+    def test_every_page_renders(self):
+        for game in GAMES.values():
+            with self.subTest(game=game.slug):
+                go = lambda name, *args: reverse(name, args=[game.slug, *args])
+                self.client.post(go("reset"))
+                for name in ["intro", "facilitator", "backdrop", "story", "debrief"]:
+                    self.assertEqual(self.client.get(go(name)).status_code, 200, name)
+                self.client.post(go("start"))
+                for stage in game.stages:
+                    page = self.client.get(go("stage", stage.number))
+                    self.assertContains(page, escape(stage.title))
+                    self.assertNotContains(page, "{#")  # no leaked template comments
+                    self.client.post(go("stage", stage.number), {"code": stage.answers[0]})
+                self.assertContains(self.client.get(go("freedom")), "You escaped in")
+                self.client.post(go("answers"), {"passcode": "open sesame"})
+                answers = self.client.get(go("answers"))
+                for stage in game.stages:
+                    self.assertContains(answers, stage.display_code)
+
+
+def susa_url(name, *args):
+    return reverse(name, args=[SUSA.slug, *args])
+
+
+class SusaTests(SimpleTestCase):
+    def submit(self, stage, code):
+        return self.client.post(susa_url("stage", stage), {"code": code})
+
+    def test_full_playthrough(self):
+        self.client.post(susa_url("start"))
+        self.assertRedirects(self.submit(1, "3-1-2-3"), susa_url("stage", 2))
+        self.assertRedirects(self.submit(2, "faith"), susa_url("stage", 3))
+        self.assertRedirects(self.submit(3, "7 1 8 4 2"), susa_url("stage", 4))
+        self.assertRedirects(self.submit(4, "2312"), susa_url("freedom"))
+        self.assertContains(self.client.get(susa_url("freedom")), "The Decree Is Sealed")
+
+    def test_wrong_codes_are_rejected(self):
+        self.client.post(susa_url("start"))
+        self.assertContains(self.submit(1, "3923"), "Check the Scriptures and try again")
+        self.submit(1, "3123")
+        self.assertContains(self.submit(2, "IDLWK"), "Check the Scriptures and try again")
+
+    def test_new_unlock_scenes(self):
+        self.client.post(susa_url("start"))
+        for stage, code, scene in [(1, "3123", "scroll"), (2, "FAITH", "night"), (3, "71842", "seal")]:
+            self.submit(stage, code)
+            self.assertContains(self.client.get(susa_url("stage", stage + 1)), f"entrance--{scene}")
+
+    def test_strips_name_the_king_by_each_bible(self):
+        self.client.post(susa_url("start"))
+        self.submit(1, "3123")
+        self.submit(2, "FAITH")
+        response = self.client.get(susa_url("stage", 3))
+        self.assertContains(response, "strips--events")
+        self.assertContains(response, "Harbona points out the pole")
+        self.assertContains(response, "Harbonah points out the gallows")
+
+    def test_progress_is_separate_from_philippi(self):
+        self.client.post(susa_url("start"))
+        self.assertRedirects(self.client.get(url("stage", 1)), url("intro"))
+
+    def test_cards_give_no_chapter_or_verse_references(self):
+        import re
+
+        self.client.post(susa_url("start"))
+        for stage in SUSA.stages:
+            page = self.client.get(susa_url("stage", stage.number)).content.decode()
+            self.assertIsNone(re.search(r"Esther \d|[Vv]erses? \d", page), f"stage {stage.number}")
+            self.client.post(susa_url("stage", stage.number), {"code": stage.answers[0]})
+
+    @override_settings(LEADER_CODE="open sesame")
+    def test_answer_key_keeps_the_references(self):
+        self.client.post(susa_url("answers"), {"passcode": "open sesame"})
+        response = self.client.get(susa_url("answers"))
+        for stage in SUSA.stages:
+            self.assertContains(response, stage.reference)
+
+    def test_forty_minutes_and_difficulty_four(self):
+        self.assertEqual(SUSA.minutes, 40)
+        self.assertContains(self.client.get(susa_url("intro")), "Difficulty 4/5")
+        self.assertContains(self.client.get(susa_url("facilitator")), "no chapter or verse references")
+
+    def test_palace_backdrop_has_no_earthquake(self):
+        response = self.client.get(susa_url("backdrop"))
+        self.assertContains(response, "room-palace")
+        self.assertContains(response, 'class="frieze"')
+        self.assertContains(response, "Haman has returned")
+        self.assertNotContains(response, 'data-action="quake"')
+        self.assertNotContains(self.client.get(susa_url("facilitator")), "Earthquake")
+
+    def test_philippi_keeps_its_cell_and_earthquake(self):
+        response = self.client.get(url("backdrop"))
+        self.assertContains(response, "room-cell")
+        self.assertContains(response, 'data-action="quake"')
+        self.assertNotContains(response, 'class="frieze"')

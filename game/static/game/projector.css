@@ -1,4 +1,5 @@
-/* Projector pages: a dark prison cell lit by torches and moonlight.
+/* Projector pages: a dark prison cell lit by torches and moonlight, or a palace
+   hall for games with room = "palace" (see "Palace room" below).
    The debrief page adds .dawn to turn the moon into a sunrise. */
 
 :root {
@@ -286,6 +287,7 @@ h2 {
 }
 .skyline .hills { fill: #3a2128; }
 .skyline .city { fill: #120b0b; }
+.skyline .palm { fill: none; stroke: #120b0b; stroke-width: 6; stroke-linecap: round; }
 
 /* Red wash for the attack in the marketplace. */
 .tint {
@@ -479,6 +481,43 @@ body.qr-hidden .join-panel { opacity: 0; transform: translateY(12px); pointer-ev
   body:not(.idle) .join-panel { transform: translateY(-72px); }
 }
 
+/* ---- Palace room (The Secret of Susa) ----
+   Blue glazed brick like the palace walls at Susa, a band of gold rosettes,
+   purple hangings, and an open arched window onto the night sky. */
+
+.room-palace .wall {
+  background:
+    radial-gradient(ellipse 45% 70% at 12% 42%, rgba(var(--fire), 0.18), transparent 70%),
+    radial-gradient(ellipse 45% 70% at 88% 42%, rgba(var(--fire), 0.18), transparent 70%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='60'%3E%3Crect width='120' height='60' fill='%23080c16'/%3E%3Cg fill='%2313203a'%3E%3Crect x='2' y='2' width='116' height='26' rx='2'/%3E%3Crect x='-58' y='32' width='116' height='26' rx='2'/%3E%3Crect x='62' y='32' width='116' height='26' rx='2'/%3E%3C/g%3E%3Cg fill='%23182a4a' opacity='.7'%3E%3Crect x='14' y='6' width='50' height='8' rx='4'/%3E%3Crect x='76' y='38' width='36' height='7' rx='3'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 120px 60px;
+}
+.room-palace .bars { display: none; }
+.room-palace .window { box-shadow: 0 0 0 10px #8a6a2c, 0 0 0 14px #1a1208, 0 0 60px rgba(var(--moon), 0.25); }
+.room-palace.moonrise .window { box-shadow: 0 0 0 10px #8a6a2c, 0 0 0 14px #1a1208, 0 0 140px rgba(var(--moon), 0.55); }
+
+.frieze {
+  position: absolute;
+  left: -20px;
+  right: -20px;
+  bottom: 4vh;
+  height: clamp(28px, 5vh, 48px);
+  border-block: 4px solid #8a6a2c;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Crect width='48' height='48' fill='%23123a4a'/%3E%3Cg fill='%23d9a441'%3E%3Ccircle cx='24' cy='24' r='5'/%3E%3Cellipse cx='24' cy='12' rx='3.5' ry='6'/%3E%3Cellipse cx='24' cy='36' rx='3.5' ry='6'/%3E%3Cellipse cx='12' cy='24' rx='6' ry='3.5'/%3E%3Cellipse cx='36' cy='24' rx='6' ry='3.5'/%3E%3C/g%3E%3Ccircle cx='24' cy='24' r='2' fill='%23123a4a'/%3E%3C/svg%3E") 0 0 / auto 100%;
+  opacity: 0.8;
+}
+
+.drape {
+  position: absolute;
+  top: -10px;
+  width: clamp(40px, 6vw, 110px);
+  height: 78vh;
+  border-bottom: 6px solid #b8892f;
+  background: repeating-linear-gradient(90deg, #2d1235 0, #4d2059 18px, #2d1235 36px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+.drape-left { left: 0; border-radius: 0 0 100% 0 / 0 0 22% 0; }
+.drape-right { right: 0; border-radius: 0 0 0 100% / 0 0 0 22%; }
+
 /* ---- Smaller screens ---- */
 
 /* Keep the control bar on one row: drop the key hints. */
@@ -504,7 +543,8 @@ body.qr-hidden .join-panel { opacity: 0; transform: translateY(12px); pointer-ev
 
 /* Phones in portrait: no room for wall torches beside the text. */
 @media (max-width: 560px) {
-  .torch { display: none; }
+  .torch,
+  .drape { display: none; }
 }
 
 /* Where a corner card would crowd the text, show the QR code centred on top. */

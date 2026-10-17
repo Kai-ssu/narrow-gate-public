@@ -17,7 +17,11 @@ GAME = Game(
     setting="Philippi · AD 50",
     minutes=40,
     team_size="4–8",
+    difficulty=2.5,
     story_note="A dramatized retelling of Acts 16:16–24. Read the full passage in your Bible for every detail.",
+    room="cell",
+    earthquake=True,
+    time_up_line="Midnight has come.",
     stages=(
         Stage(
             1,

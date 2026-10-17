@@ -7,7 +7,7 @@
 <h1>{{ game.title }}</h1>
 <div class="clock" id="clock" role="timer" aria-live="off">{{ game.minutes }}:00</div>
 <p class="status" id="status"></p>
-<p class="line" id="line"></p>
+<p class="line" id="line" data-time-up="{{ game.time_up_line }}"></p>
 {% endblock %}
 
 {% block overlay %}
@@ -21,7 +21,7 @@
 {% block controls %}
 <a href="{% url 'story' game.slug %}" id="story-link">Story <kbd>I</kbd></a>
 <button type="button" data-action="toggle">Start <kbd>Space</kbd></button>
-<button type="button" data-action="quake">Earthquake <kbd>E</kbd></button>
+{% if game.earthquake %}<button type="button" data-action="quake">Earthquake <kbd>E</kbd></button>{% endif %}
 <button type="button" data-action="qr">QR code <kbd>Q</kbd></button>
 <button type="button" data-action="clock">Timer on <kbd>T</kbd></button>
 <button type="button" data-action="sound">Sound on <kbd>S</kbd></button>

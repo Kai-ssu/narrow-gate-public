@@ -207,6 +207,31 @@ const Sound = (() => {
       tone(out, t, 90, { peak: 0.5, release: 0.25, to: 50 });
     },
 
+    // A scroll unrolling: a run of paper rustles (The Secret of Susa).
+    unroll(out, t) {
+      for (let i = 0; i < 6; i++) {
+        hiss(out, t + i * 0.13, { filter: "highpass", freq: 2500 + i * 200, q: 0.7, peak: 0.12, release: 0.08 });
+      }
+      hiss(out, t + 0.8, { filter: "lowpass", freq: 500, peak: 0.2, release: 0.1 });
+    },
+
+    // Soft high chimes, like stars coming out (The Secret of Susa: the sleepless night).
+    chime(out, t) {
+      [1568, 1319, 1175, 1568, 1760].forEach((freq, i) => {
+        tone(out, t + i * 0.28, freq, { peak: 0.06, release: 1.6 });
+        tone(out, t + i * 0.28, freq * 2, { peak: 0.015, release: 0.8 });
+      });
+    },
+
+    // A wax seal pressed onto a decree, then a bright chord (The Secret of Susa).
+    stamp(out, t) {
+      tone(out, t, 110, { type: "triangle", peak: 0.5, release: 0.3, to: 60 });
+      hiss(out, t, { filter: "lowpass", freq: 700, peak: 0.35, release: 0.15 });
+      for (const freq of [294, 370, 440, 587]) {
+        tone(out, t + 0.35, freq, { type: "triangle", peak: 0.05, attack: 0.3, hold: 0.6, release: 1.4 });
+      }
+    },
+
     // A slow, rising chord (story: the closing line).
     swell(out, t) {
       for (const freq of [147, 220, 294, 349]) {
@@ -223,6 +248,9 @@ const Sound = (() => {
     quake: [["padlock", 0.45], ["quake", 1.5]],
     torch: [["padlock", 0.45], ["torch", 1.5]],
     doors: [["padlock", 0.45], ["doors", 1.7]],
+    scroll: [["padlock", 0.45], ["unroll", 1.6]],
+    night: [["padlock", 0.45], ["chime", 1.6]],
+    seal: [["padlock", 0.45], ["stamp", 2.0]],
   };
 
   const ready = () => ctx !== null && enabled;
@@ -279,8 +307,9 @@ const Sound = (() => {
     };
   }
 
-  // Dungeon ambience for the backdrop: a low, steady drone with torch crackle and
-  // the odd water drip. (Kept nearly flat: a slow swell sounds like ocean waves.)
+  // Backdrop ambience: a low, steady drone with torch crackle, plus the room's own
+  // touch: water drips in the prison cell, or a few plucked strings in the palace.
+  // (Kept nearly flat: a slow swell sounds like ocean waves.)
   function startAmbience() {
     if (!ready() || ambience) return;
     ambience = startBed((out, later) => {
@@ -304,8 +333,24 @@ const Sound = (() => {
         tone(out, ctx.currentTime, freq, { peak: 0.06, release: 0.09, to: freq * 1.8 });
         later(drip, 3000 + Math.random() * 7000);
       };
+      // A short phrase on a lyre in D with a raised third (D Eb F# G A Bb C D),
+      // a scale that gives an old Near Eastern sound.
+      const SCALE = [294, 311, 370, 392, 440, 466, 523, 587];
+      const pluck = () => {
+        let step = Math.floor(Math.random() * 5);
+        const notes = 2 + Math.floor(Math.random() * 3);
+        for (let i = 0; i < notes; i++) {
+          const freq = SCALE[step];
+          const at = ctx.currentTime + i * (0.35 + Math.random() * 0.25);
+          tone(out, at, freq, { type: "triangle", peak: 0.045, attack: 0.005, release: 1.4 });
+          tone(out, at, freq * 2, { peak: 0.012, attack: 0.005, release: 0.6 });
+          step = Math.max(0, Math.min(SCALE.length - 1, step + (Math.random() < 0.5 ? -1 : 1)));
+        }
+        later(pluck, 5000 + Math.random() * 7000);
+      };
       crackle();
-      later(drip, 2000);
+      if (document.body.dataset.room === "palace") later(pluck, 2500);
+      else later(drip, 2000);
       return [drone];
     });
   }

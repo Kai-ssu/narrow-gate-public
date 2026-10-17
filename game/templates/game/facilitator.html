@@ -6,7 +6,9 @@
 <section class="card">
   <p class="eyebrow">{{ game.title }} · For facilitators &amp; media team</p>
   <h1>Running the Game</h1>
+  <p class="game-meta">{% include "game/difficulty.html" %}</p>
   <p>Everything for the night, in order. Allow about {{ game.minutes }} minutes for the game, plus 10–15 minutes for the debrief, with teams of {{ game.team_size }}.</p>
+  {% if not game.show_references %}<p>The clue cards in this game give no chapter or verse references. Teams find their own way through {{ game.passage }}, and the hints point to moments in the story rather than verses. The answer key has every reference.</p>{% endif %}
 </section>
 
 <section class="card">
@@ -18,9 +20,8 @@
   </ol>
   <div class="button-row">
     <a class="button" href="{% url 'backdrop' game.slug %}" target="_blank" rel="noopener">Open the backdrop</a>
-    <a class="button button--quiet" href="{% url 'backdrop' game.slug %}?timer=off" target="_blank" rel="noopener">Backdrop without timer</a>
   </div>
-  <p class="fine-print">Use the version without a timer if teams play in separate rooms. Each team's phone has its own timer either way.</p>
+  <p class="fine-print">If teams play in separate rooms, hide the room timer with the <strong>Timer</strong> button on the backdrop (or press <kbd>T</kbd>). Each team's phone has its own timer either way.</p>
 </section>
 
 <section class="card join">
@@ -68,9 +69,9 @@
   <table class="keys">
     <tr><td><kbd>I</kbd></td><td>Play the story</td></tr>
     <tr><td><kbd>Space</kbd></td><td>Start, pause or resume the room timer</td></tr>
-    <tr><td><kbd>E</kbd></td><td>Earthquake (shake and rumble), for the moment the story calls for it</td></tr>
+    {% if game.earthquake %}<tr><td><kbd>E</kbd></td><td>Earthquake (shake and rumble), for the moment the story calls for it</td></tr>{% endif %}
     <tr><td><kbd>Q</kbd></td><td>Show or hide the player QR code</td></tr>
-    <tr><td><kbd>T</kbd></td><td>Show or hide the room timer (or open the backdrop with <code>?timer=off</code>)</td></tr>
+    <tr><td><kbd>T</kbd></td><td>Show or hide the room timer</td></tr>
     <tr><td><kbd>D</kbd></td><td>Go to the debrief slides</td></tr>
     <tr><td><kbd>S</kbd></td><td>Sound on or off</td></tr>
     <tr><td><kbd>F</kbd></td><td>Full screen</td></tr>

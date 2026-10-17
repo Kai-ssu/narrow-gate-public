@@ -3,6 +3,7 @@
 <section class="card intro">
   <p class="eyebrow">A Scripture escape room · {{ game.passage }}</p>
   <h1>{{ game.title }}</h1>
+  <p class="game-meta">{% include "game/difficulty.html" %}</p>
 
   <div class="story">
     {% include game.templates.intro_story %}
