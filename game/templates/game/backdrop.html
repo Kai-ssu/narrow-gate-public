@@ -1,0 +1,36 @@
+{% extends "game/projector_base.html" %}
+{% load static %}
+{% block title %}Backdrop · {{ game.title }}{% endblock %}
+
+{% block content %}
+<p class="eyebrow">{{ game.setting }}</p>
+<h1>{{ game.title }}</h1>
+<div class="clock" id="clock" role="timer" aria-live="off">{{ game.minutes }}:00</div>
+<p class="status" id="status"></p>
+<p class="line" id="line"></p>
+{% endblock %}
+
+{% block overlay %}
+<aside class="join-panel" id="join" aria-label="Join the game">
+  {{ join_qr }}
+  <p class="join-title">Scan to play</p>
+  <p class="join-url">{{ join_url_short }}</p>
+</aside>
+{% endblock %}
+
+{% block controls %}
+<a href="{% url 'story' game.slug %}" id="story-link">Story <kbd>I</kbd></a>
+<button type="button" data-action="toggle">Start <kbd>Space</kbd></button>
+<button type="button" data-action="quake">Earthquake <kbd>E</kbd></button>
+<button type="button" data-action="qr">QR code <kbd>Q</kbd></button>
+<button type="button" data-action="clock">Timer on <kbd>T</kbd></button>
+<button type="button" data-action="sound">Sound on <kbd>S</kbd></button>
+<a href="{% url 'debrief' game.slug %}" id="debrief-link">Debrief <kbd>D</kbd></a>
+<button type="button" data-action="reset">Reset <kbd>R</kbd></button>
+{% endblock %}
+
+{% block scripts %}
+{{ game.backdrop_lines|json_script:"backdrop-lines" }}
+<script src="{% static 'game/sound.js' %}"></script>
+<script src="{% static 'game/backdrop.js' %}"></script>
+{% endblock %}

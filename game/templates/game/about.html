@@ -1,0 +1,39 @@
+{% extends "game/base.html" %}
+{% block title %}About · {{ SITE_NAME }}{% endblock %}
+{% block sound_toggle %}{% endblock %}
+{% block content %}
+<section class="card">
+  <p class="eyebrow">About</p>
+  <h1>{{ SITE_NAME }}</h1>
+  <p>{{ SITE_NAME }} is a collection of Bible escape rooms for youth groups. Each one is built on a passage of Scripture: teams of 4–8 work through locked stages with an NIV or NKJV Bible, then talk through what they found in a group debrief.</p>
+  <p>The web app replaces envelopes and padlocks. Each team plays on a phone, reading clue cards and entering codes. A projector backdrop sets the scene in the room, a short story film opens the game, and discussion slides lead the debrief.</p>
+  <a class="button" href="{% url 'landing' %}">See the escape rooms</a>
+</section>
+
+<section class="card">
+  <h2>The escape rooms</h2>
+  <ul class="facts">
+    {% for game in games %}
+    <li><a href="{% url 'intro' game.slug %}">{{ game.title }}</a> · {{ game.passage }}</li>
+    {% endfor %}
+  </ul>
+</section>
+
+<section class="card">
+  <h2>How it's built</h2>
+  <ul class="facts">
+    <li><strong>Django</strong> checks every code on the server, so answers never appear in the page.</li>
+    <li>Progress lives in a <strong>signed cookie</strong> instead of a database, so it runs free on Render.</li>
+    <li>The unlock animations are <strong>pure CSS</strong>, and every sound effect is synthesized in the browser with the <strong>Web Audio API</strong>. There are no image or audio files.</li>
+  </ul>
+</section>
+
+<section class="card">
+  <h2>Made by Kye Laurel</h2>
+  <p>The code for this app is open on GitHub, along with more of my work.</p>
+  <div class="button-row">
+    <a class="button" href="{{ PUBLIC_REPO_URL }}" target="_blank" rel="noopener">View the code</a>
+    <a class="button button--quiet" href="{{ AUTHOR_URL }}" target="_blank" rel="noopener">github.com/Kai-ssu</a>
+  </div>
+</section>
+{% endblock %}

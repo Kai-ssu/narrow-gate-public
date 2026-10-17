@@ -1,0 +1,28 @@
+{% extends "game/base.html" %}
+{% block sound_toggle %}{% endblock %}
+{% block content %}
+<section class="card intro hero">
+  <p class="eyebrow">Scripture escape rooms</p>
+  <h1>{{ SITE_NAME }}</h1>
+  <p class="hero-verse"><q data-bible="niv">Enter through the narrow gate.</q><q data-bible="nkjv">Enter by the narrow gate.</q> <span>Matthew 7:13</span></p>
+  <p>Bible escape rooms for youth groups. Teams open the game on a phone, solve puzzles with their Bibles, and unlock each stage of the story.</p>
+</section>
+
+<section class="games" aria-label="Escape rooms">
+  {% for game in games %}
+  <article class="card game-card">
+    <p class="eyebrow">{{ game.passage }}</p>
+    <h2>{{ game.title }}</h2>
+    <p>{{ game.summary }}</p>
+    <p class="game-meta">{{ game.stages|length }} stages · {{ game.minutes }} minutes · teams of {{ game.team_size }} · NIV or NKJV</p>
+    <div class="button-row">
+      <a class="button" href="{% url 'intro' game.slug %}">Play</a>
+      <a class="button button--quiet" href="{% url 'facilitator' game.slug %}">Lead</a>
+    </div>
+  </article>
+  {% endfor %}
+  <p class="more-games">More escape rooms are on the way.</p>
+</section>
+
+<p class="back-link"><a href="{% url 'about' %}">About {{ SITE_NAME }}</a></p>
+{% endblock %}

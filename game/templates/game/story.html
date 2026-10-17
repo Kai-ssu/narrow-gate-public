@@ -1,0 +1,37 @@
+{% extends "game/projector_base.html" %}
+{% load static %}
+{% block title %}Story · {{ game.title }}{% endblock %}
+{% block body_class %}outside{% endblock %}
+
+{% block scenery %}
+{% include game.templates.story_scenery %}
+{% endblock %}
+
+{% block content %}
+<div class="story-title" id="title">
+  <p class="eyebrow">{{ game.passage }}</p>
+  <h1>{{ game.title }}</h1>
+  <p class="line">Click or press <kbd>Space</kbd> to begin the story.</p>
+  {% if game.story_note %}<p class="story-note">{{ game.story_note }}</p>{% endif %}
+</div>
+<p class="caption hidden" id="caption" aria-live="polite"></p>
+<div class="finale" id="finale" hidden>
+  <a class="cta" href="{% url 'backdrop' game.slug %}?start=1">Start the game</a>
+</div>
+{% endblock %}
+
+{% block overlay %}<div class="progress" id="progress" aria-hidden="true"></div>{% endblock %}
+
+{% block controls %}
+<button type="button" data-action="toggle">Play <kbd>Space</kbd></button>
+<button type="button" data-action="prev">Back <kbd>←</kbd></button>
+<button type="button" data-action="next">Next <kbd>→</kbd></button>
+<button type="button" data-action="restart">Restart <kbd>R</kbd></button>
+<a href="{% url 'backdrop' game.slug %}" id="backdrop-link">Backdrop <kbd>B</kbd></a>
+{% endblock %}
+
+{% block scripts %}
+{{ game.story_scenes|json_script:"story-scenes" }}
+<script src="{% static 'game/sound.js' %}"></script>
+<script src="{% static 'game/story.js' %}"></script>
+{% endblock %}

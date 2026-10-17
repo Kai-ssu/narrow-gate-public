@@ -1,0 +1,14 @@
+{% extends "game/base.html" %}
+{% block title %}Free! · {{ game.title }}{% endblock %}
+{% block content %}
+<section class="card intro">
+  {% include game.templates.freedom_quote %}
+  <p class="elapsed">You escaped in <strong>{{ elapsed }}</strong></p>
+  <p>Find your Gamemaster to open the Victory Box.</p>
+</section>
+
+<form class="reset-form" method="post" action="{% url 'reset' game.slug %}" data-confirm="Reset this device for a new team? This clears the progress and timer.">
+  {% csrf_token %}
+  <button class="button button--quiet" type="submit">Reset for a new team</button>
+</form>
+{% endblock %}

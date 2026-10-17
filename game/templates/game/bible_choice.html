@@ -1,0 +1,9 @@
+{% comment %}
+  NIV / NKJV switch. The choice is kept on the <html> element (data-bible) and in
+  localStorage by game.js, so it applies to every card. Without JavaScript the NIV shows.
+{% endcomment %}
+<div class="bible-choice" role="radiogroup" aria-label="Bible translation">
+  <span class="bible-label">{{ label|default:"Your Bible" }}</span>
+  <button type="button" role="radio" aria-checked="true" data-bible-pick="niv">NIV</button>
+  <button type="button" role="radio" aria-checked="false" data-bible-pick="nkjv">NKJV</button>
+</div>

@@ -1,0 +1,25 @@
+{% extends "game/base.html" %}
+{% block content %}
+<section class="card intro">
+  <p class="eyebrow">A Scripture escape room · {{ game.passage }}</p>
+  <h1>{{ game.title }}</h1>
+
+  <div class="story">
+    {% include game.templates.intro_story %}
+  </div>
+
+  <div class="translation">
+    <p>The clues follow the <strong>NIV</strong> or the <strong>NKJV</strong>. Choose the Bible your team is using, since other translations word some verses differently. You can change it later from any stage.</p>
+    {% include "game/bible_choice.html" with label="Our Bible" %}
+  </div>
+
+  {% if progress %}
+    <a class="button" href="{{ resume_url }}">Continue</a>
+  {% else %}
+    <form method="post" action="{% url 'start' game.slug %}" data-swap>
+      {% csrf_token %}
+      <button class="button" type="submit">Begin: your {{ game.minutes }} minutes start now</button>
+    </form>
+  {% endif %}
+</section>
+{% endblock %}

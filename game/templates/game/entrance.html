@@ -1,0 +1,42 @@
+{# Full-screen scene played once on arrival. Pure CSS, so it also clears itself without JS. #}
+<div data-scene="{{ entrance.scene }}" class="entrance entrance--{{ entrance.scene }}{% if entrance.padlock %} entrance--padlock{% endif %}" role="status">
+  <div class="entrance-shake">
+    <div class="entrance-art" aria-hidden="true">
+      {% if entrance.padlock %}
+      <svg class="padlock" viewBox="0 0 100 120">
+        <path class="shackle" d="M30 80 V36 a20 20 0 0 1 40 0 V80" />
+        <rect class="lock-body" x="16" y="52" width="68" height="56" rx="9" />
+        <circle class="keyhole" cx="50" cy="74" r="7" />
+        <rect class="keyhole" x="47" y="76" width="6" height="16" rx="2" />
+      </svg>
+      {% endif %}
+
+      <div class="scene">
+        {% if entrance.scene == "dark" or entrance.scene == "torch" %}
+          <div class="glow"></div>
+          <div class="flame"></div>
+          <div class="{% if entrance.scene == 'torch' %}torch{% else %}candle{% endif %}"></div>
+        {% elif entrance.scene == "songs" %}
+          <span class="note">♪</span><span class="note">♫</span><span class="note">♪</span><span class="note">♫</span>
+        {% elif entrance.scene == "quake" %}
+          <svg class="cracks" viewBox="0 0 200 200">
+            <path pathLength="1" d="M100 0 L92 40 L108 70 L88 110 L104 150 L94 200" />
+            <path pathLength="1" d="M92 40 L60 55 L40 50" />
+            <path pathLength="1" d="M88 110 L130 128 L170 122" />
+            <path pathLength="1" d="M104 150 L70 175" />
+          </svg>
+        {% elif entrance.scene == "doors" %}
+          <div class="doorway">
+            <div class="light"></div>
+            <div class="door door-left"></div>
+            <div class="door door-right"></div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if entrance.padlock %}<p class="entrance-kicker">Unlocked</p>{% endif %}
+    <p class="entrance-caption">{{ entrance.caption }}</p>
+  </div>
+  <button class="entrance-skip" type="button">Skip</button>
+</div>

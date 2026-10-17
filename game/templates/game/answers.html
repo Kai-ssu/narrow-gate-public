@@ -1,0 +1,46 @@
+{% extends "game/base.html" %}
+{% block title %}Answer Key · {{ game.title }}{% endblock %}
+{% block head %}<meta name="robots" content="noindex">{% endblock %}
+{% block sound_toggle %}{% endblock %}
+{% block content %}
+<section class="card">
+  <p class="eyebrow">{{ game.title }} · For leaders only</p>
+  <h1>Answer Key</h1>
+
+  {% if not configured %}
+    <p>The answer key isn't set up yet. Add a <code>LEADER_CODE</code> environment variable on your host (on Render: your service → <strong>Environment</strong>), then reload this page.</p>
+  {% elif not unlocked %}
+    <form class="passcode" method="post">
+      {% csrf_token %}
+      <label for="passcode">Leader passcode</label>
+      <input id="passcode" name="passcode" type="password" required autocomplete="current-password">
+      {% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+      <button class="button" type="submit">Show answers</button>
+    </form>
+    <p class="fine-print">Leading your own group? The passcode is in the <a href="{{ PUBLIC_REPO_URL }}/blob/main/LEADERS.md" target="_blank" rel="noopener">leaders' guide</a>.</p>
+  {% else %}
+    <p>Keep this screen away from players. This device stays unlocked until you lock it.</p>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="lock">
+      <button class="button button--quiet" type="submit">Lock</button>
+    </form>
+  {% endif %}
+</section>
+
+{% for stage in stages %}
+<section class="card answer">
+  <p class="eyebrow">Stage {{ stage.number }} · {{ stage.reference }}</p>
+  <h2>{{ stage.title }}</h2>
+  <p class="answer-code">{{ stage.display_code }}</p>
+  <table class="keys">
+    {% for part, how in stage.key %}
+    <tr><td><strong>{{ part }}</strong></td><td>{{ how }}</td></tr>
+    {% endfor %}
+  </table>
+  {% if stage.key_note %}<p class="fine-print">{{ stage.key_note }}</p>{% endif %}
+</section>
+{% endfor %}
+
+<p class="back-link"><a href="{% url 'facilitator' game.slug %}">← Back to Running the Game</a></p>
+{% endblock %}

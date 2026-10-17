@@ -1,0 +1,53 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ game.title }}{% endblock %}</title>
+  <link rel="icon" href="{% static 'game/icon.svg' %}" type="image/svg+xml">
+  <link rel="icon" href="{% static 'game/icon-32.png' %}" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="{% static 'game/apple-touch-icon.png' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=EB+Garamond:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'game/projector.css' %}">
+</head>
+<body class="{% block body_class %}{% endblock %}" data-game="{{ game.slug }}" data-minutes="{{ game.minutes }}">
+  {# Full-screen pages for the media team's projector. Not linked from the player pages. #}
+  <div class="room" id="room">
+    <div class="wall"></div>
+
+    <div class="window" aria-hidden="true">
+      <div class="moon"></div>
+      <div class="bars"></div>
+    </div>
+    <div class="beam" aria-hidden="true"></div>
+    <div class="dust" id="dust" aria-hidden="true"></div>
+
+    <div class="torch torch-left" aria-hidden="true">
+      <div class="halo"></div><div class="flame"></div><div class="stick"></div>
+    </div>
+    <div class="torch torch-right" aria-hidden="true">
+      <div class="halo"></div><div class="flame"></div><div class="stick"></div>
+    </div>
+
+    {% block scenery %}{% endblock %}
+
+    <main class="center">
+      {% block content %}{% endblock %}
+    </main>
+
+    <div class="vignette" aria-hidden="true"></div>
+  </div>
+
+  {% block overlay %}{% endblock %}
+
+  <div class="controls" id="controls">
+    {% block controls %}{% endblock %}
+    <button type="button" data-action="fullscreen">Full screen <kbd>F</kbd></button>
+  </div>
+
+  <script src="{% static 'game/projector.js' %}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

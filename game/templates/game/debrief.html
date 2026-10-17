@@ -1,0 +1,24 @@
+{% extends "game/projector_base.html" %}
+{% load static %}
+{% block title %}Debrief · {{ game.title }}{% endblock %}
+{% block body_class %}dawn{% endblock %}
+
+{% block content %}
+<section class="slide">
+  <p class="eyebrow">{{ game.title }} · After the escape</p>
+  <h1>Debrief &amp; Discussion</h1>
+  <p class="line">Take a moment of quiet reflection before we talk together.</p>
+</section>
+
+{% include game.templates.debrief_questions %}
+
+<p class="counter" id="counter" aria-live="polite"></p>
+{% endblock %}
+
+{% block controls %}
+<a href="{% url 'backdrop' game.slug %}" id="backdrop-link">Backdrop <kbd>B</kbd></a>
+<button type="button" data-action="prev">Previous <kbd>←</kbd></button>
+<button type="button" data-action="next">Next <kbd>→</kbd></button>
+{% endblock %}
+
+{% block scripts %}<script src="{% static 'game/debrief.js' %}"></script>{% endblock %}

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Narrow Gate: a wall with one narrow doorway, light showing through.
+       Transparent background; apple-touch-icon.png is the same design on a dark tile. -->
+  <g transform="translate(32 32) scale(1.3) translate(-32 -32)">
+    <path fill="#e0a64a" d="M12 52V12h40v40H36V29a4 4 0 0 0-8 0v23z"/>
+    <path fill="#ece2cf" d="M28 52V29a4 4 0 0 1 8 0v23z"/>
+  </g>
+</svg>

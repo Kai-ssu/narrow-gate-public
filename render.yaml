@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: narrow-gate
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    startCommand: gunicorn narrowgate.wsgi
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: PYTHON_VERSION
+        value: 3.13.7
+      - key: LEADER_CODE # passcode for the answer key; set it in the Render dashboard
+        sync: false

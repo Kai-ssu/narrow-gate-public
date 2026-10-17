@@ -1,0 +1,52 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{% if game %}{{ game.title }}{% else %}{{ SITE_NAME }}{% endif %}{% endblock %}</title>
+  {% block head %}{% endblock %}
+  <link rel="icon" href="{% static 'game/icon.svg' %}" type="image/svg+xml">
+  <link rel="icon" href="{% static 'game/icon-32.png' %}" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="{% static 'game/apple-touch-icon.png' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'game/style.css' %}">
+  <script>
+    try { document.documentElement.dataset.bible = localStorage.getItem("narrow-gate-bible") || "niv"; } catch {}
+  </script>
+</head>
+<body>
+  {% if entrance %}{% include "game/entrance.html" %}{% endif %}
+  <header class="topbar">
+    <a class="brand" href="{% url 'landing' %}">{% if game %}{{ game.title }}{% else %}{{ SITE_NAME }}{% endif %}</a>
+    <div class="topbar-end">
+      {% block sound_toggle %}
+      <button class="sound-toggle" type="button" aria-pressed="true" aria-label="Sound effects">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path class="speaker" d="M4 9h4l5-4v14l-5-4H4z" />
+          <path class="waves" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11" />
+          <path class="mute" d="M16 9l6 6M22 9l-6 6" />
+        </svg>
+      </button>
+      {% endblock %}
+      {% if deadline %}<div class="timer" data-deadline="{{ deadline }}" aria-live="off">--:--</div>{% endif %}
+    </div>
+  </header>
+  {% if reached %}
+  <nav class="stages" aria-label="Stages">
+    {% for s in reached %}
+      <a href="{% url 'stage' game.slug s.number %}"{% if s.number == stage.number %} aria-current="page"{% endif %}>{{ s.number }}</a>
+    {% endfor %}
+  </nav>
+  {% endif %}
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="credits">
+    {{ SITE_NAME }} · © {% now "Y" %} Kye Laurel · <a href="{{ AUTHOR_URL }}" target="_blank" rel="noopener">GitHub</a>
+  </footer>
+  <script src="{% static 'game/sound.js' %}"></script>
+  <script src="{% static 'game/game.js' %}"></script>
+</body>
+</html>

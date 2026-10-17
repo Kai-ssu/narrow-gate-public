@@ -1,0 +1,12 @@
+{% extends "game/base.html" %}
+{% block title %}Reset · {{ game.title }}{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>Reset this device?</h1>
+  <p>This clears this device's progress and timer so a new team can start. Other devices aren't affected.</p>
+  <form method="post">
+    {% csrf_token %}
+    <button class="button" type="submit">Reset</button>
+  </form>
+</section>
+{% endblock %}

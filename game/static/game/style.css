@@ -1,0 +1,606 @@
+:root {
+  --bg: #0f0d0b;
+  --bg-glow: #2a1d10;
+  --card: #1b1612;
+  --card-edge: #3a2c1e;
+  --text: #ece2cf;
+  --muted: #b3a389;
+  --accent: #e0a64a;
+  --accent-ink: #1a1208;
+  --error: #f08a6c;
+  --ok: #9fd18b;
+  --radius: 14px;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(ellipse at top, var(--bg-glow), var(--bg) 60%) fixed, var(--bg);
+  color: var(--text);
+  font: 1.15rem/1.6 "EB Garamond", Georgia, serif;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(15, 13, 11, 0.92);
+  border-bottom: 1px solid var(--card-edge);
+}
+
+.brand {
+  font-family: "Cinzel", serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.topbar-end {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.sound-toggle {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--card-edge);
+  border-radius: 50%;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+.sound-toggle svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.sound-toggle .speaker { fill: currentColor; }
+.sound-toggle[aria-pressed="true"] { color: var(--accent); }
+.sound-toggle[aria-pressed="true"] .mute,
+.sound-toggle[aria-pressed="false"] .waves { display: none; }
+
+.timer {
+  font: 700 1.1rem/1 "Cinzel", serif;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+.timer.low { color: var(--error); }
+
+.stages {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 16px 0;
+}
+.stages a {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--card-edge);
+  color: var(--muted);
+  text-decoration: none;
+  font-family: "Cinzel", serif;
+}
+.stages a[aria-current="page"] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 16px 16px 48px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--card-edge);
+  border-radius: var(--radius);
+  padding: 22px 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.intro { text-align: center; }
+.intro .story { text-align: left; }
+
+.eyebrow {
+  margin: 0 0 4px;
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+h1 {
+  margin: 0 0 16px;
+  font: 700 1.8rem/1.2 "Cinzel", serif;
+  color: var(--accent);
+}
+
+.scene { font-style: italic; color: var(--muted); }
+
+.translation {
+  margin: 16px 0 20px;
+  padding: 8px 12px;
+  border: 1px solid var(--card-edge);
+  border-radius: 8px;
+  font-size: 1rem;
+  color: var(--muted);
+}
+.translation strong { color: var(--accent); }
+
+q { font-style: italic; }
+
+.clues, .steps { padding-left: 0; list-style: none; }
+.clues > li, .steps > li {
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border-left: 3px solid var(--accent);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 0 8px 8px 0;
+}
+.steps { counter-reset: step; }
+.steps > li::before {
+  counter-increment: step;
+  content: counter(step) ". ";
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.label {
+  display: block;
+  font: 700 0.8rem/1.4 "Cinzel", serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.ref { color: var(--muted); }
+
+.hint { margin-top: 8px; color: var(--muted); }
+.hint summary {
+  display: inline-block;
+  padding: 2px 12px;
+  border: 1px solid var(--card-edge);
+  border-radius: 999px;
+  font: 600 0.75rem/1.6 "Cinzel", serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  cursor: pointer;
+  list-style: none;
+}
+.hint summary::-webkit-details-marker { display: none; }
+.hint[open] summary { margin-bottom: 6px; }
+
+.cipher {
+  padding: 12px 14px;
+  border: 1px dashed var(--card-edge);
+  border-radius: 8px;
+}
+.cipher ol { margin: 0; padding-left: 22px; }
+
+.strips { display: grid; gap: 10px; }
+
+/* NIV / NKJV: show only the wording for the chosen Bible (set on <html> by game.js). */
+html:not([data-bible="nkjv"]) [data-bible="nkjv"],
+html[data-bible="nkjv"] [data-bible="niv"] { display: none; }
+
+.bible-choice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.bible-label { margin-right: 4px; color: var(--muted); }
+.bible-choice button {
+  padding: 4px 14px;
+  border: 1px solid var(--card-edge);
+  border-radius: 999px;
+  background: none;
+  color: var(--muted);
+  font: 700 0.85rem/1.4 "Cinzel", serif;
+  cursor: pointer;
+}
+.bible-choice button[aria-checked="true"] {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.translation p { margin: 0 0 10px; }
+.intro .bible-choice { justify-content: center; }
+.strip {
+  position: relative;
+  min-height: 56px;
+  padding: 12px;
+  border: 1px solid var(--card-edge);
+  border-radius: 6px;
+  background: #e8dcc2;
+  color: #2a1f12;
+  font: 600 1.2rem/1.2 "EB Garamond", serif;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+.strip .back { display: none; font-family: "Cinzel", serif; font-size: 1.5rem; }
+.strip.flipped { background: #3a2c1e; color: var(--accent); }
+.strip.flipped .front { display: none; }
+.strip.flipped .back { display: inline; }
+
+.lock form { display: grid; gap: 10px; }
+.lock label { font-family: "Cinzel", serif; text-align: center; }
+.lock input {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid var(--card-edge);
+  border-radius: 10px;
+  background: #0f0d0b;
+  color: var(--text);
+  font: 700 1.6rem/1 "Cinzel", serif;
+  letter-spacing: 0.3em;
+  text-align: center;
+  text-transform: uppercase;
+}
+.lock input:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.error { margin: 0; color: var(--error); text-align: center; }
+.unlocked { margin: 0 0 12px; color: var(--ok); text-align: center; font-family: "Cinzel", serif; }
+.lock .button { width: 100%; }
+
+.button {
+  display: inline-block;
+  padding: 14px 22px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font: 700 1rem/1.2 "Cinzel", serif;
+  letter-spacing: 0.05em;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+.button:hover { filter: brightness(1.08); }
+.button--quiet {
+  border: 1px solid var(--card-edge);
+  background: none;
+  color: var(--muted);
+}
+
+.reset-form { text-align: center; }
+
+.elapsed { font-size: 1.3rem; }
+
+/* Narrow Gate home page. */
+.hero h1 { font-size: 2.3rem; }
+.hero-verse { margin: 0 0 12px; font-style: italic; color: var(--muted); }
+.hero-verse span { font-style: normal; font-size: 0.9rem; letter-spacing: 0.05em; }
+.games { display: grid; gap: 16px; }
+.game-card { margin: 0; }
+.game-card h2 { font-size: 1.5rem; margin-bottom: 8px; }
+.game-meta { font-size: 0.95rem; color: var(--muted); }
+.more-games { margin: 0; text-align: center; font-style: italic; color: var(--muted); }
+.facts a { color: var(--accent); }
+
+/* Leader and about pages. */
+h2 {
+  margin: 0 0 12px;
+  font: 700 1.15rem/1.3 "Cinzel", serif;
+  color: var(--accent);
+}
+kbd {
+  padding: 1px 6px;
+  border: 1px solid var(--card-edge);
+  border-radius: 4px;
+  background: #0f0d0b;
+  font: 0.85em/1.4 ui-monospace, monospace;
+}
+.keys { width: 100%; border-collapse: collapse; }
+.keys td { padding: 6px 0; border-top: 1px solid var(--card-edge); vertical-align: top; }
+.keys td:first-child { width: 5.5em; }
+.facts { margin: 0; padding-left: 20px; }
+.button-row { display: flex; flex-wrap: wrap; gap: 10px; }
+
+/* Leaders' answer key. */
+.passcode { display: grid; gap: 10px; max-width: 360px; }
+.passcode label { font: 600 0.9rem/1.4 "Cinzel", serif; color: var(--muted); }
+.passcode input {
+  padding: 12px;
+  border: 1px solid var(--card-edge);
+  border-radius: 10px;
+  background: #0f0d0b;
+  color: var(--text);
+  font: inherit;
+}
+.passcode input:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+.passcode .error { text-align: left; }
+.answer h2 { margin-bottom: 4px; }
+.answer-code {
+  margin: 0 0 12px;
+  font: 700 2rem/1.2 "Cinzel", serif;
+  letter-spacing: 0.08em;
+  color: var(--text);
+}
+.back-link { text-align: center; }
+.back-link a,
+.fine-print a { color: var(--accent); }
+.fine-print { margin: 12px 0 0; font-size: 1rem; color: var(--muted); }
+.facts li { margin-bottom: 8px; }
+
+.join {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.join-qr { flex: 0 0 120px; }
+.join-qr svg { display: block; width: 100%; height: auto; border-radius: 6px; }
+.join-label { margin: 0; font: 600 0.8rem/1.4 "Cinzel", serif; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.join-url { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+
+.credits {
+  padding: 0 16px 24px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.credits a { color: var(--accent); }
+
+.shake { animation: shake 0.4s; }
+@keyframes shake {
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .shake { animation: none; }
+}
+
+/* ---------- Entrance scenes (played once when a page is unlocked) ---------- */
+
+.entrance {
+  --scene-at: 0.1s;  /* when the stage's own scene starts */
+  --out-at: 2.8s;    /* when the overlay fades away */
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: radial-gradient(circle at center, #1d140b, #050403 70%);
+  text-align: center;
+  animation: entrance-out 0.7s ease-in var(--out-at) forwards;
+}
+.entrance--padlock { --scene-at: 1.5s; --out-at: 3.9s; }
+.entrance--doors { --out-at: 4.4s; }
+
+.entrance-art {
+  position: relative;
+  display: grid;
+  width: 220px;
+  max-width: 60vw;
+  aspect-ratio: 1;
+  margin: 0 auto 8px;
+}
+.entrance-art > * { grid-area: 1 / 1; }
+
+.scene {
+  position: relative;
+  animation: fade-in 0.5s ease-out var(--scene-at) both;
+}
+
+.entrance-kicker {
+  margin: 0 0 6px;
+  font: 700 0.9rem/1 "Cinzel", serif;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--accent);
+  animation: fade-up 0.4s ease-out 0.8s both;
+}
+
+.entrance-caption {
+  max-width: 22ch;
+  margin: 0 auto;
+  font: 500 1.35rem/1.35 "Cinzel", serif;
+  color: var(--text);
+  animation: fade-up 0.6s ease-out calc(var(--scene-at) + 0.3s) both;
+}
+
+.entrance-skip {
+  position: absolute;
+  bottom: max(24px, env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 18px;
+  border: 1px solid var(--card-edge);
+  border-radius: 999px;
+  background: none;
+  color: var(--muted);
+  font: 600 0.8rem/1 "Cinzel", serif;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+}
+
+/* Padlock: appears, jiggles, shackle springs open, then fades. */
+.padlock {
+  width: 58%;
+  margin: auto;
+  overflow: visible;
+  animation:
+    padlock-in 0.35s ease-out both,
+    padlock-jiggle 0.25s ease-in-out 0.4s,
+    padlock-out 0.4s ease-in 1.2s forwards;
+}
+.shackle {
+  fill: none;
+  stroke: #cfc6b6;
+  stroke-width: 9;
+  stroke-linecap: round;
+  transform-box: fill-box;
+  transform-origin: 100% 100%;
+  animation: shackle-open 0.45s cubic-bezier(0.3, 1.6, 0.5, 1) 0.65s both;
+}
+.lock-body { fill: var(--accent); }
+.keyhole { fill: #1a1208; }
+
+/* Candle (stage 1) and torch (stage 4). */
+.flame {
+  position: absolute;
+  left: 50%;
+  top: 50px;
+  width: 28px;
+  height: 48px;
+  margin-left: -14px;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  background: radial-gradient(ellipse at 50% 70%, #fff6d5 0 20%, #ffc04d 45%, #e0662a 72%, transparent 74%);
+  transform-origin: 50% 100%;
+  animation: flicker 0.18s ease-in-out infinite alternate;
+}
+.candle {
+  position: absolute;
+  left: 50%;
+  top: 94px;
+  width: 34px;
+  height: 72px;
+  margin-left: -17px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #cdbd9f, #f2e8d4, #cdbd9f);
+}
+.glow {
+  position: absolute;
+  inset: -30%;
+  background: radial-gradient(circle at 50% 36%, rgba(255, 170, 60, 0.35), transparent 55%);
+  animation: glow-pulse 1.6s ease-in-out infinite alternate;
+}
+.entrance--torch .flame { top: 26px; width: 40px; height: 68px; margin-left: -20px; }
+.entrance--torch .torch {
+  position: absolute;
+  left: 50%;
+  top: 86px;
+  width: 16px;
+  height: 100px;
+  margin-left: -8px;
+  border-radius: 3px 3px 6px 6px;
+  background: linear-gradient(90deg, #3d2a19, #6d4d2e, #3d2a19);
+}
+.entrance--torch .glow {
+  inset: -140%;
+  animation: glow-grow 1.4s ease-out var(--scene-at) both;
+}
+
+/* Songs (stage 2): notes drift upward. */
+.note {
+  position: absolute;
+  bottom: 12%;
+  font-size: 2.6rem;
+  line-height: 1;
+  color: var(--accent);
+  opacity: 0;
+  animation: note-rise 2.2s ease-out var(--scene-at) both;
+}
+.note:nth-child(1) { left: 14%; }
+.note:nth-child(2) { left: 38%; font-size: 3.2rem; animation-delay: calc(var(--scene-at) + 0.3s); }
+.note:nth-child(3) { left: 62%; animation-delay: calc(var(--scene-at) + 0.6s); }
+.note:nth-child(4) { left: 80%; font-size: 2rem; animation-delay: calc(var(--scene-at) + 0.15s); }
+
+/* Earthquake (stage 3): everything shakes and the floor cracks. */
+.entrance--quake .entrance-shake { animation: quake 0.9s linear var(--scene-at) both; }
+.cracks { width: 100%; height: 100%; overflow: visible; }
+.cracks path {
+  fill: none;
+  stroke: #f3c77a;
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  filter: drop-shadow(0 0 4px rgba(243, 199, 122, 0.8));
+  animation: crack-draw 0.6s ease-out calc(var(--scene-at) + 0.1s) both;
+}
+
+/* Freedom: the prison doors swing open onto light. */
+.doorway {
+  position: absolute;
+  inset: 8% 16%;
+  overflow: hidden;
+  border-radius: 80px 80px 0 0;
+  background: #0b0806;
+  box-shadow: 0 0 0 6px #3a2c1e;
+  perspective: 500px;
+}
+.light {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 60%, #fff7df, #f4c46a 40%, #b5671f 85%);
+}
+.door {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background: repeating-linear-gradient(90deg, #4a3420 0 14px, #3d2a19 14px 16px);
+}
+.door-left { left: 0; transform-origin: left center; animation: door-left 1.1s ease-in-out calc(var(--scene-at) + 0.3s) both; }
+.door-right { right: 0; transform-origin: right center; animation: door-right 1.1s ease-in-out calc(var(--scene-at) + 0.3s) both; }
+
+@keyframes entrance-out { to { opacity: 0; visibility: hidden; } }
+@keyframes fade-in { from { opacity: 0; } }
+@keyframes fade-up { from { opacity: 0; transform: translateY(10px); } }
+@keyframes padlock-in { from { opacity: 0; transform: scale(0.8); } }
+@keyframes padlock-jiggle {
+  25% { transform: rotate(-6deg); }
+  75% { transform: rotate(6deg); }
+}
+@keyframes padlock-out { to { opacity: 0; transform: translateY(-16px) scale(0.95); } }
+@keyframes shackle-open { to { transform: translateY(-12px) rotate(18deg); } }
+@keyframes flicker {
+  from { transform: scale(1, 1) rotate(-2deg); }
+  to { transform: scale(0.92, 1.08) rotate(2deg); }
+}
+@keyframes glow-pulse { to { opacity: 0.7; } }
+@keyframes glow-grow { from { opacity: 0; transform: scale(0.15); } }
+@keyframes note-rise {
+  0% { opacity: 0; transform: translateY(20px); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-120px) rotate(-12deg); }
+}
+@keyframes quake {
+  0%, 100% { transform: none; }
+  10% { transform: translate(-10px, 4px) rotate(-1deg); }
+  20% { transform: translate(9px, -6px) rotate(1deg); }
+  30% { transform: translate(-8px, 6px); }
+  40% { transform: translate(7px, -4px) rotate(-0.5deg); }
+  50% { transform: translate(-6px, 3px); }
+  60% { transform: translate(5px, -2px); }
+  70% { transform: translate(-3px, 2px); }
+  80% { transform: translate(2px, -1px); }
+  90% { transform: translate(-1px, 1px); }
+}
+@keyframes crack-draw { from { stroke-dashoffset: 1; } }
+@keyframes door-left { to { transform: rotateY(-88deg); } }
+@keyframes door-right { to { transform: rotateY(88deg); } }
+
+/* Reduced motion: no movement, just the caption, then a quick fade. */
+@media (prefers-reduced-motion: reduce) {
+  .entrance { --out-at: 2.2s; }
+  .entrance * { animation: none !important; }
+  .entrance .padlock,
+  .entrance .note,
+  .entrance .door { display: none; }
+}

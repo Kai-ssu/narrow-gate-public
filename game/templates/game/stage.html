@@ -1,0 +1,26 @@
+{% extends "game/base.html" %}
+{% block title %}Stage {{ stage.number }} · {{ game.title }}{% endblock %}
+{% block content %}
+<section class="card">
+  <p class="eyebrow">Stage {{ stage.number }} · {{ stage.reference }}</p>
+  <h1>{{ stage.title }}</h1>
+  <div class="translation">{% include "game/bible_choice.html" %}</div>
+  {% include card_template %}
+</section>
+
+<section class="card lock{% if error %} shake{% endif %}">
+  {% if solved %}
+    <p class="unlocked">Unlocked ✓</p>
+    <a class="button" href="{{ next_url }}">Continue</a>
+  {% else %}
+    <form method="post" data-swap>
+      {% csrf_token %}
+      <label for="code">{{ stage.code_prompt }}</label>
+      <input id="code" name="code" required autocomplete="off" autocorrect="off" spellcheck="false"
+             {% if stage.numeric %}inputmode="numeric"{% else %}autocapitalize="characters"{% endif %}>
+      {% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+      <button class="button" type="submit">Unlock</button>
+    </form>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,526 @@
+/* Projector pages: a dark prison cell lit by torches and moonlight.
+   The debrief page adds .dawn to turn the moon into a sunrise. */
+
+:root {
+  --text: #f1e3c4;
+  --muted: #a8977a;
+  --accent: #e0a64a;
+  --danger: #f0765a;
+  --moon: 190, 210, 255;
+  --fire: 255, 160, 60;
+  /* The window scales with whichever of width or height is tighter;
+     everything below it is laid out from these. */
+  --win-w: clamp(84px, min(13vw, 22vh), 220px);
+  --win-top: clamp(12px, 5vh, 54px);
+  --win-bottom: calc(var(--win-top) + var(--win-w) * 0.75 + 10px);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: #050403;
+  color: var(--text);
+}
+
+body.idle { cursor: none; }
+
+.room {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* Stone wall: an SVG brick pattern under a warm wash of torchlight. */
+.wall {
+  position: absolute;
+  inset: -40px;
+  background:
+    radial-gradient(ellipse 45% 70% at 12% 42%, rgba(var(--fire), 0.20), transparent 70%),
+    radial-gradient(ellipse 45% 70% at 88% 42%, rgba(var(--fire), 0.20), transparent 70%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='120'%3E%3Crect width='160' height='120' fill='%23100b08'/%3E%3Cg fill='%23261c15'%3E%3Crect x='3' y='3' width='154' height='54' rx='4'/%3E%3Crect x='-77' y='63' width='154' height='54' rx='4'/%3E%3Crect x='83' y='63' width='154' height='54' rx='4'/%3E%3C/g%3E%3Cg fill='%232d2219' opacity='.6'%3E%3Crect x='20' y='10' width='60' height='20' rx='8'/%3E%3Crect x='100' y='80' width='40' height='16' rx='6'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 160px 120px;
+}
+
+/* Barred window high on the back wall. */
+.window {
+  position: absolute;
+  top: var(--win-top);
+  left: 50%;
+  width: var(--win-w);
+  aspect-ratio: 4 / 3;
+  transform: translateX(-50%);
+  z-index: 1; /* sits over the top of the moonlight beam */
+  overflow: hidden;
+  border-radius: 50% 50% 6px 6px / 40% 40% 6px 6px;
+  background: radial-gradient(circle at 65% 35%, #2b3550, #0b0f1c 70%);
+  box-shadow: 0 0 0 10px #1a130e, 0 0 60px rgba(var(--moon), 0.25);
+}
+.moon {
+  position: absolute;
+  top: 18%;
+  right: 20%;
+  width: 26%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, #fffaf0, #d8dcef 60%, #b9c0dc);
+  box-shadow: 0 0 30px rgba(var(--moon), 0.7);
+}
+.bars {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(90deg, transparent 0 16%, #120d0a 16% 21%);
+}
+
+/* Moonlight falling into the cell. */
+.beam {
+  position: absolute;
+  top: calc(var(--win-top) + var(--win-w) * 0.5);
+  left: 50%;
+  width: max(60vw, 360px);
+  height: 90vh;
+  transform: translateX(-50%);
+  clip-path: polygon(42% 0, 58% 0, 100% 100%, 0 100%);
+  background: linear-gradient(rgba(var(--moon), 0.13), rgba(var(--moon), 0.02) 80%, transparent);
+  filter: blur(6px);
+}
+
+.dust { position: absolute; inset: 0; pointer-events: none; }
+.mote {
+  position: absolute;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background: rgba(var(--moon), 0.55);
+  animation: drift var(--dur) linear var(--delay) infinite;
+}
+@keyframes drift {
+  0% { opacity: 0; transform: translate(0, 0); }
+  15%, 85% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--dx), 26vh); }
+}
+
+/* Wall torches. */
+.torch {
+  position: absolute;
+  top: 30vh;
+  width: 80px;
+  height: 260px;
+  transform-origin: 50% 0;
+}
+.torch-left { left: 8vw; }
+.torch-right { right: 8vw; }
+.halo {
+  position: absolute;
+  left: 50%;
+  top: 30px;
+  width: 520px;
+  height: 520px;
+  margin: -260px 0 0 -260px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(var(--fire), 0.30), rgba(var(--fire), 0.08) 40%, transparent 70%);
+  animation: glow 2.4s ease-in-out infinite alternate;
+}
+.flame {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 46px;
+  height: 78px;
+  margin-left: -23px;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  background: radial-gradient(ellipse at 50% 70%, #fff6d5 0 20%, #ffc04d 45%, #e0662a 72%, transparent 74%);
+  transform-origin: 50% 100%;
+  animation: flicker 0.16s ease-in-out infinite alternate;
+}
+.torch-right .flame { animation-duration: 0.19s; }
+.stick {
+  position: absolute;
+  left: 50%;
+  top: 70px;
+  width: 18px;
+  height: 130px;
+  margin-left: -9px;
+  border-radius: 3px 3px 6px 6px;
+  background: linear-gradient(90deg, #3d2a19, #6d4d2e, #3d2a19);
+}
+.stick::after {
+  /* iron bracket */
+  content: "";
+  position: absolute;
+  left: -14px;
+  top: 70px;
+  width: 46px;
+  height: 12px;
+  border-radius: 3px;
+  background: #2a2420;
+}
+@keyframes flicker {
+  from { transform: scale(1, 1) rotate(-2deg); }
+  to { transform: scale(0.9, 1.1) rotate(2deg); }
+}
+@keyframes glow {
+  0% { opacity: 0.8; transform: scale(0.97); }
+  50% { opacity: 1; }
+  100% { opacity: 0.85; transform: scale(1.03); }
+}
+
+/* Title, timer and narration. */
+.center {
+  position: absolute;
+  inset: 0;
+  z-index: 2; /* text always sits in front of the window */
+  display: grid;
+  place-content: center;
+  align-content: safe center; /* if it can't fit, keep the top visible and scroll */
+  overflow-y: auto;
+  /* Start below the window so they never overlap; leave room for the control bar. */
+  padding: calc(var(--win-bottom) + 16px) 16px max(6vh, 84px);
+  text-align: center;
+}
+.eyebrow {
+  margin: 0;
+  font: 500 clamp(0.75rem, min(1.5vw, 2.4vh), 1.4rem)/1 "Cinzel", serif;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+h1 {
+  margin: 0.4em 0 0;
+  font: 700 clamp(1.4rem, min(4.5vw, 7vh), 4.4rem)/1.1 "Cinzel", serif;
+  color: var(--accent);
+  text-shadow: 0 0 30px rgba(var(--fire), 0.35);
+}
+.clock {
+  margin: 0.15em 0 0;
+  font: 700 clamp(2.8rem, min(19vw, 28vh), 17rem)/1 "Cinzel", serif;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+  text-shadow: 0 0 40px rgba(var(--fire), 0.35), 0 4px 0 rgba(0, 0, 0, 0.6);
+  transition: color 1s, opacity 0.4s;
+}
+.paused .clock { opacity: 0.55; }
+.low .clock {
+  color: var(--danger);
+  text-shadow: 0 0 50px rgba(240, 118, 90, 0.55), 0 4px 0 rgba(0, 0, 0, 0.6);
+}
+.done .clock { animation: pulse 1.6s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: 0.45; } }
+
+.status {
+  min-height: 1.4em;
+  margin: 0.3em 0 0;
+  font: 600 clamp(0.75rem, min(1.3vw, 2vh), 1.2rem)/1.4 "Cinzel", serif;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.line {
+  min-height: 1.4em;
+  margin: 0.6em auto 0;
+  max-width: 40ch;
+  font: italic 400 clamp(1rem, min(2.2vw, 3.6vh), 2rem)/1.4 "EB Garamond", Georgia, serif;
+  color: var(--muted);
+  transition: opacity 1.2s;
+}
+.line.fading { opacity: 0; }
+
+/* Debrief slides. */
+.slide { animation: rise 0.8s ease-out; }
+h2 {
+  margin: 0.35em 0 0;
+  font: 700 clamp(1.25rem, min(3.8vw, 6vh), 3.6rem)/1.15 "Cinzel", serif;
+  color: var(--accent);
+  text-shadow: 0 0 30px rgba(var(--fire), 0.35);
+}
+.question {
+  max-width: 34ch;
+  margin: 0.8em auto 0;
+  font: 400 clamp(1.05rem, min(2.9vw, 4.4vh), 2.8rem)/1.45 "EB Garamond", Georgia, serif;
+  color: var(--text);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+.counter {
+  position: fixed;
+  right: clamp(12px, 2vw, 32px);
+  bottom: clamp(10px, 2vh, 24px);
+  margin: 0;
+  font: 600 clamp(0.9rem, 1.2vw, 1.2rem)/1 "Cinzel", serif;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(16px); }
+}
+
+/* ---- Story mode ---- */
+
+/* Philippi at dusk, faded over the cell while the story is outside. */
+.outside-scene {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+  background: linear-gradient(#1c1428 0%, #4a2a3a 38%, #9a4f3c 62%, #d98a4a 78%, #f0b35e 88%);
+  transition: opacity 2s ease;
+}
+.outside .outside-scene { opacity: 1; }
+.sun {
+  position: absolute;
+  left: 85%; /* low and off to the side, so captions never sit on its glow */
+  bottom: 27%;
+  width: min(14vw, 22vh);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  background: radial-gradient(circle, #fff1c6, #ffc46b 55%, rgba(255, 160, 70, 0) 72%);
+}
+.skyline {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 42%;
+}
+.skyline .hills { fill: #3a2128; }
+.skyline .city { fill: #120b0b; }
+
+/* Red wash for the attack in the marketplace. */
+.tint {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, rgba(140, 20, 10, 0.25), rgba(90, 0, 0, 0.7));
+  transition: opacity 1.2s;
+}
+.tint-red .tint { opacity: 1; }
+
+/* A blow lands, or the cell door slams. */
+.room.flash { animation: flash 0.45s ease-out; }
+@keyframes flash {
+  from { filter: brightness(2.4) saturate(0.6); }
+}
+
+/* Midnight: the moon brightens in the cell window. */
+.moon,
+.window,
+.beam { transition: transform 3s, box-shadow 3s, opacity 3s; }
+.moonrise .moon { transform: scale(1.15); box-shadow: 0 0 60px rgba(var(--moon), 0.95); }
+.moonrise .window { box-shadow: 0 0 0 10px #1a130e, 0 0 140px rgba(var(--moon), 0.55); }
+
+.story-title kbd {
+  padding: 1px 6px;
+  border: 1px solid #3a2c1e;
+  border-radius: 4px;
+  font: 0.8em/1.4 ui-monospace, monospace;
+}
+.story-note {
+  max-width: 44ch;
+  margin: 1.6em auto 0;
+  font: italic 400 clamp(0.85rem, min(1.4vw, 2.2vh), 1.2rem)/1.4 "EB Garamond", Georgia, serif;
+  color: var(--text);
+  opacity: 0.75;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
+}
+.caption {
+  max-width: 28ch;
+  margin: 0 auto;
+  font: 500 clamp(1.3rem, min(3.3vw, 5.4vh), 3.2rem)/1.4 "EB Garamond", Georgia, serif;
+  color: var(--text);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.95), 0 0 2px rgba(0, 0, 0, 0.9);
+  transition: opacity 0.45s, transform 0.45s;
+}
+.caption.hidden { opacity: 0; transform: translateY(8px); }
+.finale { margin-top: 1.4em; }
+.cta {
+  display: inline-block;
+  padding: 0.8em 1.6em;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #1a1208;
+  font: 700 clamp(1rem, 1.8vw, 1.5rem)/1 "Cinzel", serif;
+  text-decoration: none;
+  box-shadow: 0 0 40px rgba(var(--fire), 0.45);
+}
+.progress {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 4;
+  width: 0;
+  height: 4px;
+  background: var(--accent);
+  transition: width 0.6s ease;
+}
+
+/* Daybreak for the debrief. */
+.dawn { --moon: 255, 205, 150; }
+.dawn .window { background: linear-gradient(#f3b979, #d9785a 55%, #5d3f5c); }
+.dawn .moon {
+  top: 52%;
+  right: 34%;
+  width: 34%;
+  background: radial-gradient(circle, #fff6d8, #ffd27a 70%);
+  box-shadow: 0 0 40px rgba(255, 200, 120, 0.9);
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 45%, rgba(0, 0, 0, 0.85));
+}
+
+/* Earthquake: the cell shakes, the light stutters. */
+.room.quake { animation: quake 1.8s linear; }
+.room.quake .wall,
+.room.quake .halo { animation: stutter 1.8s steps(1); }
+@keyframes quake {
+  0%, 100% { transform: none; }
+  5% { transform: translate(-18px, 8px) rotate(-0.6deg); }
+  10% { transform: translate(16px, -10px) rotate(0.6deg); }
+  15% { transform: translate(-14px, 12px); }
+  20% { transform: translate(15px, -6px) rotate(0.4deg); }
+  25% { transform: translate(-12px, 9px) rotate(-0.4deg); }
+  30% { transform: translate(11px, -9px); }
+  40% { transform: translate(-9px, 6px); }
+  50% { transform: translate(8px, -5px) rotate(0.2deg); }
+  60% { transform: translate(-6px, 4px); }
+  70% { transform: translate(4px, -3px); }
+  80% { transform: translate(-3px, 2px); }
+  90% { transform: translate(1px, -1px); }
+}
+@keyframes stutter {
+  0%, 30%, 60%, 100% { filter: none; }
+  10%, 45% { filter: brightness(0.4); }
+  20% { filter: brightness(1.6); }
+}
+
+/* Control bar: shows on mouse movement, hides when idle. */
+.controls {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  padding: 10px;
+  border: 1px solid #3a2c1e;
+  border-radius: 14px;
+  background: rgba(15, 11, 8, 0.9);
+  transform: translateX(-50%);
+  transition: opacity 0.4s;
+}
+body.idle .controls { opacity: 0; pointer-events: none; }
+.controls button,
+.controls a {
+  padding: 8px 14px;
+  border: 1px solid #3a2c1e;
+  border-radius: 8px;
+  background: #1b1612;
+  color: var(--text);
+  font: 600 0.9rem/1 "Cinzel", serif;
+  text-decoration: none;
+  cursor: pointer;
+}
+.controls button:hover,
+.controls a:hover { border-color: var(--accent); }
+.controls kbd {
+  margin-left: 6px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: #2a2018;
+  color: var(--muted);
+  font: 0.75rem/1 ui-monospace, monospace;
+}
+
+/* Backdrop with the room timer switched off (?timer=off or T). */
+.no-timer .clock,
+.no-timer .status { display: none; }
+
+/* "Scan to play" QR code: a corner card on wide screens. */
+.join-panel {
+  position: fixed;
+  left: clamp(12px, 2vw, 32px);
+  bottom: clamp(12px, 2vh, 32px);
+  z-index: 3;
+  width: clamp(130px, 22vh, 260px);
+  padding: 12px;
+  border: 1px solid #3a2c1e;
+  border-radius: 14px;
+  background: rgba(15, 11, 8, 0.9);
+  text-align: center;
+  cursor: pointer;
+  transition: opacity 0.5s, transform 0.5s;
+}
+.join-panel svg { display: block; width: 100%; height: auto; border-radius: 6px; }
+.join-title {
+  margin: 10px 0 2px;
+  font: 700 clamp(0.9rem, 2.2vh, 1.4rem)/1.2 "Cinzel", serif;
+  color: var(--accent);
+}
+.join-url {
+  margin: 0;
+  font: 600 clamp(0.7rem, 1.5vh, 1rem)/1.3 "EB Garamond", Georgia, serif;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+body.qr-hidden .join-panel { opacity: 0; transform: translateY(12px); pointer-events: none; }
+
+/* Corner QR card: move it up out of the way while the control bar is showing. */
+@media (min-width: 901px) and (min-height: 561px) {
+  body:not(.idle) .join-panel { transform: translateY(-72px); }
+}
+
+/* ---- Smaller screens ---- */
+
+/* Keep the control bar on one row: drop the key hints. */
+@media (max-width: 1280px) {
+  .controls kbd { display: none; }
+}
+
+/* Laptops and small projectors: smaller torches, closer to the edges. */
+@media (max-width: 1100px), (max-height: 700px) {
+  .torch { transform: scale(0.7); }
+  .torch-left { left: 3vw; }
+  .torch-right { right: 3vw; }
+}
+
+/* Tablets and short landscape screens. */
+@media (max-width: 760px), (max-height: 520px) {
+  .torch { top: 24vh; transform: scale(0.45); }
+  .controls { bottom: 10px; gap: 6px; padding: 8px; }
+  .controls button,
+  .controls a { padding: 7px 10px; font-size: 0.8rem; }
+  .controls kbd { display: none; } /* touch screens have no keys */
+}
+
+/* Phones in portrait: no room for wall torches beside the text. */
+@media (max-width: 560px) {
+  .torch { display: none; }
+}
+
+/* Where a corner card would crowd the text, show the QR code centred on top. */
+@media (max-width: 900px), (max-height: 560px) {
+  .join-panel {
+    left: 50%;
+    top: 50%;
+    bottom: auto;
+    width: min(260px, 64vw, 58vh);
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.6);
+  }
+  body.qr-hidden .join-panel { transform: translate(-50%, -46%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flame, .halo, .mote, .done .clock, .slide, .room.flash { animation: none; }
+  .room.quake { animation: none; }
+}

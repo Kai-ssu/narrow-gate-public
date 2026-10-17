@@ -1,0 +1,80 @@
+{% extends "game/base.html" %}
+{% block title %}For Leaders · {{ game.title }}{% endblock %}
+{% block sound_toggle %}{% endblock %}
+{% block content %}
+{# Anyone can open this page, so it must never include answers. #}
+<section class="card">
+  <p class="eyebrow">{{ game.title }} · For facilitators &amp; media team</p>
+  <h1>Running the Game</h1>
+  <p>Everything for the night, in order. Allow about {{ game.minutes }} minutes for the game, plus 10–15 minutes for the debrief, with teams of {{ game.team_size }}.</p>
+</section>
+
+<section class="card">
+  <h2>1 · Before players arrive</h2>
+  <ol class="steps">
+    <li>On the projector laptop, open the <strong>backdrop</strong> and press <kbd>F</kbd> for full screen.</li>
+    <li>Players scan the QR code on the backdrop, or type the address below. One phone per team works best.</li>
+    <li>Make sure every team has an <strong>NIV</strong> or <strong>NKJV</strong> Bible. Teams choose which one in the app before they begin.</li>
+  </ol>
+  <div class="button-row">
+    <a class="button" href="{% url 'backdrop' game.slug %}" target="_blank" rel="noopener">Open the backdrop</a>
+    <a class="button button--quiet" href="{% url 'backdrop' game.slug %}?timer=off" target="_blank" rel="noopener">Backdrop without timer</a>
+  </div>
+  <p class="fine-print">Use the version without a timer if teams play in separate rooms. Each team's phone has its own timer either way.</p>
+</section>
+
+<section class="card join">
+  <div class="join-qr">{{ join_qr }}</div>
+  <div>
+    <p class="join-label">Player link</p>
+    <p class="join-url">{{ join_url_short }}</p>
+  </div>
+</section>
+
+<section class="card">
+  <h2>2 · Start</h2>
+  <ol class="steps">
+    <li>Play the <strong>story</strong> on the projector: choose <strong>Story</strong> on the backdrop (or press <kbd>I</kbd>). It tells the backstory in about two minutes and ends with <strong>Start the game</strong>, which starts the room timer. It's a dramatized retelling, so encourage everyone to read the full passage in their Bible afterwards. You can also read the host script aloud instead.</li>
+    <li>When the timer starts (or you press <kbd>Space</kbd> on the backdrop), tell every team to tap <strong>Begin</strong> at the same moment.</li>
+  </ol>
+</section>
+
+<section class="card">
+  <h2>3 · During the game</h2>
+  <ol class="steps">
+    {% include game.templates.lead_tips %}
+    <li>Each clue has its own hint button, so step in only when a team has been stuck for a while.</li>
+    <li>When a team escapes, open their Victory Box. <strong>Reset for a new team</strong> on their screen clears the phone for the next group.</li>
+  </ol>
+</section>
+
+<section class="card">
+  <h2>4 · Debrief</h2>
+  <ol class="steps">
+    <li>On the backdrop, move the mouse and choose <strong>Debrief</strong> (or press <kbd>D</kbd>).</li>
+    <li>Use <kbd>→</kbd> and <kbd>←</kbd>, or a presentation clicker, to move through the three questions.</li>
+  </ol>
+  <a class="button button--quiet" href="{% url 'debrief' game.slug %}" target="_blank" rel="noopener">Open the debrief slides</a>
+</section>
+
+<section class="card">
+  <h2>Answer key</h2>
+  <p>Every code with how teams find it, for both the NIV and NKJV. It's behind a leader passcode so players who open this page can't see it.</p>
+  <a class="button button--quiet" href="{% url 'answers' game.slug %}">Open the answer key</a>
+</section>
+
+<section class="card">
+  <h2>Backdrop keys</h2>
+  <table class="keys">
+    <tr><td><kbd>I</kbd></td><td>Play the story</td></tr>
+    <tr><td><kbd>Space</kbd></td><td>Start, pause or resume the room timer</td></tr>
+    <tr><td><kbd>E</kbd></td><td>Earthquake (shake and rumble), for the moment the story calls for it</td></tr>
+    <tr><td><kbd>Q</kbd></td><td>Show or hide the player QR code</td></tr>
+    <tr><td><kbd>T</kbd></td><td>Show or hide the room timer (or open the backdrop with <code>?timer=off</code>)</td></tr>
+    <tr><td><kbd>D</kbd></td><td>Go to the debrief slides</td></tr>
+    <tr><td><kbd>S</kbd></td><td>Sound on or off</td></tr>
+    <tr><td><kbd>F</kbd></td><td>Full screen</td></tr>
+    <tr><td><kbd>R</kbd></td><td>Reset the room timer</td></tr>
+  </table>
+</section>
+{% endblock %}
