@@ -263,6 +263,10 @@ html[data-bible="nkjv"] [data-bible="niv"] { display: none; }
   text-align: center;
   color: var(--accent);
 }
+.ciphertext--long { font-size: 1.05rem; line-height: 1.6; letter-spacing: 0.14em; word-spacing: 0.5em; }
+.fragments { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.fragments li { font: 700 1.25rem/1.4 "Cinzel", serif; letter-spacing: 0.3em; text-align: center; }
+.fragments span { margin-right: 10px; font-size: 0.85rem; letter-spacing: 0.1em; color: var(--muted); }
 .alphabet { margin: 0; font-size: 0.95rem; letter-spacing: 0.12em; text-align: center; overflow-wrap: anywhere; }
 
 .lock form { display: grid; gap: 10px; }
@@ -282,7 +286,8 @@ html[data-bible="nkjv"] [data-bible="niv"] { display: none; }
 .lock input:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 .error { margin: 0; color: var(--error); text-align: center; }
-.unlocked { margin: 0 0 12px; color: var(--ok); text-align: center; font-family: "Cinzel", serif; }
+.unlocked { margin: 0 0 4px; color: var(--ok); text-align: center; font-family: "Cinzel", serif; }
+.solved-code { margin: 0 0 12px; font: 700 1.6rem/1.2 "Cinzel", serif; letter-spacing: 0.12em; text-align: center; }
 .lock .button { width: 100%; }
 
 .button {
@@ -685,6 +690,31 @@ kbd {
   animation: seal-press 0.4s cubic-bezier(0.5, 0, 0.75, 0) calc(var(--scene-at) + 0.15s) both;
 }
 
+/* Writing (The Writing on the Wall, stage 4): words appear on a plaster wall. */
+.plaster {
+  position: absolute;
+  inset: 14% 4%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  place-content: center;
+  gap: 10px 8px;
+  border-radius: 4px;
+  background: radial-gradient(circle at 50% 40%, #efe4cc, #cdbb98);
+  box-shadow: inset 0 0 30px rgba(90, 60, 20, 0.35);
+}
+.plaster .word {
+  font: 700 1.1rem/1 "Cinzel", serif;
+  letter-spacing: 0.06em;
+  text-align: center;
+  color: #6b1a12;
+  clip-path: inset(0 100% 0 0);
+  animation: write-in 0.45s steps(6) calc(var(--scene-at) + 0.2s) forwards;
+}
+.plaster .word:nth-child(2) { animation-delay: calc(var(--scene-at) + 0.7s); }
+.plaster .word:nth-child(3) { animation-delay: calc(var(--scene-at) + 1.2s); }
+.plaster .word:nth-child(4) { animation-delay: calc(var(--scene-at) + 1.7s); }
+.entrance--writing { --out-at: 4.6s; }
+
 @keyframes entrance-out { to { opacity: 0; visibility: hidden; } }
 @keyframes fade-in { from { opacity: 0; } }
 @keyframes fade-up { from { opacity: 0; transform: translateY(10px); } }
@@ -720,6 +750,7 @@ kbd {
 }
 @keyframes crack-draw { from { stroke-dashoffset: 1; } }
 @keyframes unroll { from { transform: scaleY(0); } }
+@keyframes write-in { to { clip-path: inset(0 0 0 0); } }
 @keyframes rod-down { from { transform: translateY(0); } to { transform: translateY(176px); } }
 @keyframes twinkle { from { opacity: 0.2; } to { opacity: 1; } }
 @keyframes seal-press { from { opacity: 0; transform: scale(2.4); } }
@@ -730,6 +761,7 @@ kbd {
 @media (prefers-reduced-motion: reduce) {
   .entrance { --out-at: 2.2s; }
   .entrance * { animation: none !important; }
+  .entrance .plaster .word { clip-path: none; }
   .entrance .padlock,
   .entrance .note,
   .entrance .door { display: none; }

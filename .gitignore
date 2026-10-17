@@ -219,3 +219,6 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 staticfiles/
+
+# macOS Finder metadata
+.DS_Store

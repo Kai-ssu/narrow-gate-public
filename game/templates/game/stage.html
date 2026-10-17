@@ -11,6 +11,8 @@
 <section class="card lock{% if error %} shake{% endif %}">
   {% if solved %}
     <p class="unlocked">Unlocked ✓</p>
+    {# Shown again once solved: later stages in some games need earlier codes. #}
+    <p class="solved-code">{{ stage.display_code }}</p>
     <a class="button" href="{{ next_url }}">Continue</a>
   {% else %}
     <form method="post" data-swap>

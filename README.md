@@ -10,8 +10,9 @@ Scripture escape rooms for youth groups. Teams open a game on a phone or laptop,
 |---|---|---|---|---|---|
 | **Midnight in Philippi** | Acts 16:16–34 | 4 | 40 min | 2.5 / 5 | `/philippi/` |
 | **The Secret of Susa** | Esther 2–9 | 4 | 40 min | 4 / 5 | `/susa/` |
+| **The Writing on the Wall** | Daniel 1–5 | 4 | 50 min | 5 / 5 | `/babylon/` |
 
-The Secret of Susa's clue cards give no chapter or verse references: teams find their own way through Esther 2–9.
+The Secret of Susa and The Writing on the Wall give no chapter or verse references on their clue cards: teams find their own way through the passage. In The Writing on the Wall, every stage also needs the code (or cipher) from the one before it.
 
 More are on the way.
 
@@ -68,6 +69,7 @@ The site's old single-game addresses (`/play/`, `/backdrop/` and so on) redirect
 | [game/games/philippi.py](game/games/philippi.py) | Midnight in Philippi: stages, codes, answer key, story captions, backdrop narration |
 | [game/templates/game/games/philippi/](game/templates/game/games/philippi/) | Its clue cards, intro story, victory quote, story scenery, debrief questions and leader tips |
 | [game/games/susa.py](game/games/susa.py) and [game/templates/game/games/susa/](game/templates/game/games/susa/) | The Secret of Susa, laid out the same way |
+| [game/games/babylon.py](game/games/babylon.py) and [game/templates/game/games/babylon/](game/templates/game/games/babylon/) | The Writing on the Wall, laid out the same way |
 | [game/templates/game/](game/templates/game/) | Pages shared by every game |
 | [game/static/game/](game/static/game/) | Shared CSS and JavaScript: sound, animations, projector pages |
 | `docs/` | Source material for each game (kept out of the public repo) |
@@ -81,12 +83,12 @@ The site's old single-game addresses (`/play/`, `/backdrop/` and so on) redirect
 
 Some shared pieces come in more than one style, chosen in the game's file:
 
-- `room`: the projector backdrop's scenery and ambient sound. `"cell"` is a prison cell with dripping water (Midnight in Philippi); `"palace"` is a Persian palace hall with plucked strings (The Secret of Susa).
+- `room`: the projector backdrop's scenery and ambient sound. `"cell"` is a prison cell with dripping water (Midnight in Philippi); `"palace"` is a glazed-brick palace hall with plucked strings (The Secret of Susa and The Writing on the Wall).
 - `earthquake`: whether the backdrop has the <kbd>E</kbd> earthquake cue.
 - `time_up_line`: the backdrop's line when the room timer runs out.
 - `difficulty`: out of 5, in steps of 0.5, shown as a meter on the home, start and leader pages.
 - `show_references`: set to `False` to hide each stage's Bible reference from players (the answer key still shows it).
-- Each stage's `Entrance` scene: `dark`, `songs`, `quake`, `torch`, `doors`, `scroll`, `night` or `seal` (see `entrance.html`).
+- Each stage's `Entrance` scene: `dark`, `songs`, `quake`, `torch`, `doors`, `scroll`, `night`, `seal` or `writing` (see `entrance.html`).
 
 A game set somewhere new may need another room or unlock scene, which means a small change to the shared code.
 

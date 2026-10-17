@@ -232,6 +232,16 @@ const Sound = (() => {
       }
     },
 
+    // Fingers scratching words into plaster, one burst per word (The Writing on the Wall).
+    scrawl(out, t) {
+      for (let word = 0; word < 4; word++) {
+        for (let i = 0; i < 5; i++) {
+          hiss(out, t + word * 0.5 + i * 0.07, { freq: 1800 + Math.random() * 1200, q: 3, peak: 0.08, release: 0.05 });
+        }
+      }
+      tone(out, t + 2.1, 73, { type: "triangle", peak: 0.25, attack: 0.4, hold: 0.6, release: 1.2 });
+    },
+
     // A slow, rising chord (story: the closing line).
     swell(out, t) {
       for (const freq of [147, 220, 294, 349]) {
@@ -251,6 +261,7 @@ const Sound = (() => {
     scroll: [["padlock", 0.45], ["unroll", 1.6]],
     night: [["padlock", 0.45], ["chime", 1.6]],
     seal: [["padlock", 0.45], ["stamp", 2.0]],
+    writing: [["padlock", 0.45], ["scrawl", 1.7]],
   };
 
   const ready = () => ctx !== null && enabled;

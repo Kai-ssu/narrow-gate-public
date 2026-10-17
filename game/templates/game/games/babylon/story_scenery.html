@@ -1,0 +1,45 @@
+{# Babylon at dusk, shown over the banquet hall while the story is "outside". #}
+<div class="outside-scene" aria-hidden="true">
+  <div class="sun"></div>
+  <svg class="skyline" viewBox="0 0 1200 320" preserveAspectRatio="xMidYMax slice">
+    <defs>
+      <pattern id="babylon-merlons" width="24" height="12" patternUnits="userSpaceOnUse">
+        <path d="M2 12 V7 h4 V2 h10 v5 h4 v5Z" fill="#120b0b" />
+      </pattern>
+    </defs>
+    {# the river plain #}
+    <path class="hills" d="M0 238 Q300 226 600 230 T1200 236 V320 H0Z" />
+    <g class="city">
+      <rect x="0" y="262" width="1200" height="58" />
+      {# the ziggurat: stepped tiers with a shrine on top #}
+      <rect x="680" y="214" width="260" height="48" />
+      <rect x="712" y="176" width="196" height="40" />
+      <rect x="744" y="142" width="132" height="36" />
+      <rect x="772" y="112" width="76" height="32" />
+      <rect x="794" y="90" width="32" height="24" />
+      <path d="M800 214 h20 L812 262 h-4Z" />
+      {# the city wall with towers #}
+      <rect x="60" y="214" width="190" height="50" />
+      <rect x="60" y="202" width="190" height="12" fill="url(#babylon-merlons)" />
+      <rect x="420" y="214" width="200" height="50" />
+      <rect x="420" y="202" width="200" height="12" fill="url(#babylon-merlons)" />
+      <rect x="90" y="190" width="40" height="74" /><rect x="90" y="178" width="40" height="12" fill="url(#babylon-merlons)" />
+      <rect x="520" y="190" width="40" height="74" /><rect x="520" y="178" width="40" height="12" fill="url(#babylon-merlons)" />
+      {# the great gate between two tall towers, with an arched opening #}
+      <path fill-rule="evenodd" d="M250 264 V160 H420 V264Z M308 264 V212 a27 27 0 0 1 54 0 V264Z" />
+      <rect x="250" y="148" width="170" height="12" fill="url(#babylon-merlons)" />
+      <rect x="236" y="138" width="40" height="126" /><rect x="236" y="126" width="40" height="12" fill="url(#babylon-merlons)" />
+      <rect x="394" y="138" width="40" height="126" /><rect x="394" y="126" width="40" height="12" fill="url(#babylon-merlons)" />
+      {# houses beyond #}
+      <rect x="980" y="226" width="80" height="38" />
+      <rect x="1070" y="240" width="90" height="24" />
+    </g>
+    <g class="palm">
+      <path d="M30 266 Q26 222 36 190" />
+      <path d="M36 190 Q14 182 0 198 M36 190 Q58 178 76 192 M36 190 Q26 170 8 168 M36 190 Q48 168 66 166 M36 190 Q38 176 36 162" />
+      <path d="M1170 266 Q1176 220 1164 186" />
+      <path d="M1164 186 Q1142 178 1126 194 M1164 186 Q1186 174 1204 188 M1164 186 Q1154 166 1136 164 M1164 186 Q1176 164 1194 162 M1164 186 Q1166 172 1164 158" />
+    </g>
+  </svg>
+</div>
+<div class="tint" aria-hidden="true"></div>

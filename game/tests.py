@@ -11,6 +11,7 @@ from .games import GAMES
 from .games.base import normalize
 from .games.philippi import GAME as PHILIPPI
 from .games.susa import GAME as SUSA
+from .games.babylon import GAME as BABYLON
 from .views import Progress
 
 SLUG = PHILIPPI.slug
@@ -362,3 +363,53 @@ class SusaTests(SimpleTestCase):
         self.assertContains(response, "room-cell")
         self.assertContains(response, 'data-action="quake"')
         self.assertNotContains(response, 'class="frieze"')
+
+
+def babylon_url(name, *args):
+    return reverse(name, args=[BABYLON.slug, *args])
+
+
+class BabylonTests(SimpleTestCase):
+    CODES = [(1, "4233"), (2, "5403"), (3, "PRIDE"), (4, "3642")]
+
+    def submit(self, stage, code):
+        return self.client.post(babylon_url("stage", stage), {"code": code})
+
+    def test_full_playthrough(self):
+        self.client.post(babylon_url("start"))
+        for stage, code in self.CODES[:-1]:
+            self.assertRedirects(self.submit(stage, code), babylon_url("stage", stage + 1))
+        self.assertRedirects(self.submit(4, "3-6-4-2"), babylon_url("freedom"))
+        self.assertContains(self.client.get(babylon_url("freedom")), "His Kingdom Endures")
+
+    def test_old_guide_codes_are_rejected(self):
+        self.client.post(babylon_url("start"))
+        self.assertContains(self.submit(1, "1313"), "Check the Scriptures and try again")
+        self.submit(1, "4233")
+        self.assertContains(self.submit(2, "4403"), "Check the Scriptures and try again")
+
+    def test_rated_five_with_fifty_minutes(self):
+        self.assertEqual((BABYLON.difficulty, BABYLON.minutes), (5, 50))
+        self.assertContains(self.client.get(reverse("landing")), "Difficulty 5 out of 5")
+
+    def test_cards_give_no_chapter_or_verse_references(self):
+        import re
+
+        self.client.post(babylon_url("start"))
+        for stage, code in self.CODES:
+            page = self.client.get(babylon_url("stage", stage)).content.decode()
+            self.assertIsNone(re.search(r"(Daniel|Kings|Chronicles|Jeremiah) \d|[Vv]erses? \d", page), f"stage {stage}")
+            self.submit(stage, code)
+
+    def test_solved_stage_shows_its_code_for_the_next_one(self):
+        self.client.post(babylon_url("start"))
+        self.submit(1, "4233")
+        self.assertContains(self.client.get(babylon_url("stage", 1)), '<p class="solved-code">4-2-3-3</p>')
+
+    def test_writing_scene_before_the_last_stage(self):
+        self.client.post(babylon_url("start"))
+        for stage, code in self.CODES[:-1]:
+            self.submit(stage, code)
+        response = self.client.get(babylon_url("stage", 4))
+        self.assertContains(response, "entrance--writing")
+        self.assertContains(response, "GSV OZHG WRTRG")  # the enciphered clue

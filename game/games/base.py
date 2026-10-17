@@ -17,7 +17,7 @@ def normalize(code: str) -> str:
 class Entrance:
     """The animation played once when a team first arrives on a page."""
 
-    scene: str  # dark | songs | quake | torch | doors | scroll | night | seal (see entrance.html)
+    scene: str  # dark | songs | quake | torch | doors | scroll | night | seal | writing (see entrance.html)
     caption: str
     padlock: bool = True  # open a padlock first, since a code was just entered
 
